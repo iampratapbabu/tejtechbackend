@@ -17,15 +17,24 @@ exports.getAllCourse = async(req,res) =>{
 };
 
 exports.createCourse = async(req,res) =>{
-	const course = await Course.create({
-    title:req.body.title,
-    body:req.body.body,
-    courseUrl:req.body.courseUrl,
-    imageurl:req.body.imageurl,
-    category:req.body.category
+	try{
+		const course = await Course.create({
+    	title:req.body.title,
+    	body:req.body.body,
+    	courseUrl:req.body.courseUrl,
+    	imageurl:req.body.imageurl,
+    	category:req.body.category
   });
-  res.status(201).json({
+  	res.status(201).json({
        status:"success",
        course
    });
+
+	}catch(err){
+		res.status(500).json({
+			status:"SERVER ERROR",
+			msg:err.msg
+		})
+	}
+
 }

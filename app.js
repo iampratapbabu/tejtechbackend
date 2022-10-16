@@ -4,6 +4,8 @@ const morgan = require('morgan');
 //routes
 const myRouter = require("./routes/myRoute");
 const courseRouter = require("./routes/courseRoute");
+const blogsRouter = require("./routes/blogRoute");
+const userRouter = require("./routes/userRoute")
 
 const app=express();
 app.use(express.json());
@@ -24,7 +26,7 @@ app.use((req,res,next) =>{
 });
 
 app.get('/',(req,res)=>{
-  res.send("This is backend");
+  res.send("This is backend of TejTech By: TejPratap");
 });
 
 //all route files
@@ -32,5 +34,10 @@ app.use('/test',myRouter);
 app.use('/user',myRouter);
 
 app.use('/api/courses',courseRouter);
+app.use('/api/blogs',blogsRouter);
+app.use('/api/users',userRouter);
+app.use('/api/myroute',myRouter);
+
+
 
 module.exports = app;
