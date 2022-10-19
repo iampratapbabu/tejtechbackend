@@ -11,9 +11,11 @@ const courseSchema = new mongoose.Schema({
 	},
 	courseUrl:String,
 	imageUrl:String,
+	realUrl:String,
 	category:{
-		type:String,
-		required:[true,'Category is required']
+		type:[],
+		//enum:['app-development','fullstack-development','frontend-devlopment','backend-devlopment','dsa','programming-languages','datbase','blockchain','devops','system-desing','cs-subjects'],
+		default:'fullstack-development'
 	}
 
 });

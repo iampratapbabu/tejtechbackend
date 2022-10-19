@@ -1,0 +1,401 @@
+[ //app development
+	{
+		"title":"Android Java Masterclass - Become an App Developer",
+		"body":"",
+		"courseUrl":"",
+		"imageUrl":"",
+		"realUrl":"",
+		"category":["app-development","frontend-development"]
+	},
+	{
+		"title":"Angular - The Complete Guide (2022 Edition)",
+		"body":"",
+		"courseUrl":"",
+		"imageUrl":"",
+		"realUrl":"",
+		"category":["app-development","frontend-development"]
+	},
+	{
+		"title":"Flutter & Dart - The Complete Guide [2022 Edition]",
+		"body":"",
+		"courseUrl":"",
+		"imageUrl":"",
+		"realUrl":"",
+		"category":["app-development","frontend-development"]
+	},
+	{
+		"title":"Ionic - Build iOS, Android & Web Apps with Ionic & Angular",
+		"body":"",
+		"courseUrl":"",
+		"imageUrl":"",
+		"realUrl":"",
+		"category":["app-development","frontend-development"]
+	},
+	{
+		"title":"React Native basics to advanced",
+		"body":"",
+		"courseUrl":"",
+		"imageUrl":"",
+		"realUrl":"",
+		"category":["app-development","frontend-development"]
+	}
+]
+
+
+[ //blockchain
+	{
+		"title":"Blockchain and Bitcoin Fundamentals",
+		"body":"",
+		"courseUrl":"",
+		"imageUrl":"",
+		"realUrl":"",
+		"category":["blockchain"]
+	},
+	{
+		"title":"Blockchain A-Z™ Learn How To Build Your First Blockchain",
+		"body":"",
+		"courseUrl":"",
+		"imageUrl":"",
+		"realUrl":"",
+		"category":["blockchain"]
+	},
+	{
+		"title":"Ethereum and Solidity The Complete Developers Guide",
+		"body":"",
+		"courseUrl":"",
+		"imageUrl":"",
+		"realUrl":"",
+		"category":["blockchain"]
+	}
+]
+
+[ //database
+	{
+		"title":"MongoDB - The Complete Developer's Guide 2022",
+		"body":"",
+		"courseUrl":"",
+		"imageUrl":"",
+		"realUrl":"",
+		"category":["database"]
+	},
+	{
+		"title":"The Ultimate MySQL Bootcamp Go from SQL Beginner to Expert",
+		"body":"",
+		"courseUrl":"",
+		"imageUrl":"",
+		"realUrl":"",
+		"category":["database"]
+	}
+]
+
+
+[ //devops
+	{
+		"title":"Ultimate AWS Certified Solutions Architect Associate 2021",
+		"body":"",
+		"courseUrl":"",
+		"imageUrl":"",
+		"realUrl":"",
+		"category":["devops"]
+	},
+	{
+		"title":"Docker and Kubernetes The Complete Guide",
+		"body":"",
+		"courseUrl":"",
+		"imageUrl":"",
+		"realUrl":"",
+		"category":["devops"]
+	},
+	{
+		"title":"Docker for the Absolute Beginner - Hands On - DevOps 2020-5",
+		"body":"",
+		"courseUrl":"",
+		"imageUrl":"",
+		"realUrl":"",
+		"category":["devops"]
+	},
+	{
+		"title":"Git & GitHub",
+		"body":"",
+		"courseUrl":"",
+		"imageUrl":"",
+		"realUrl":"",
+		"category":["devops"]
+	},
+	{
+		"title":"Learn DevOps Docker, Kubernetes, Terraform and Azure DevOps",
+		"body":"",
+		"courseUrl":"",
+		"imageUrl":"",
+		"realUrl":"",
+		"category":["devops"]
+	},
+	{
+		"title":"Webpack 2 The Complete Developer's Guide 2020-3",
+		"body":"",
+		"courseUrl":"",
+		"imageUrl":"",
+		"realUrl":"",
+		"category":["devops"]
+	}	
+]
+
+
+[ //fullstack-development
+	{
+		"title":"Full MERN",
+		"body":"",
+		"courseUrl":"",
+		"imageUrl":"",
+		"realUrl":"",
+		"category":["fullstack-development"]
+	},
+	{
+		"title":"How To Become A Shopify Expert (From Zero To Hero !)",
+		"body":"",
+		"courseUrl":"",
+		"imageUrl":"",
+		"realUrl":"",
+		"category":["fullstack-development"]
+	},
+	{
+		"title":"MERN e-commerce",
+		"body":"",
+		"courseUrl":"",
+		"imageUrl":"",
+		"realUrl":"",
+		"category":["fullstack-development"]
+	},
+	{
+		"title":"MERN Social",
+		"body":"",
+		"courseUrl":"",
+		"imageUrl":"",
+		"realUrl":"",
+		"category":["fullstack-development"]
+	},
+	{
+		"title":"MERN Stack E-Commerce Mobile App with React Native [2021]",
+		"body":"",
+		"courseUrl":"",
+		"imageUrl":"",
+		"realUrl":"",
+		"category":["fullstack-development"]
+	},
+	{
+		"title":"Next JS",
+		"body":"",
+		"courseUrl":"",
+		"imageUrl":"",
+		"realUrl":"",
+		"category":["frontend-development"]
+	},
+	{
+		"title":"Modern JavaScript From The Beginning 2019-12",
+		"body":"",
+		"courseUrl":"",
+		"imageUrl":"",
+		"realUrl":"",
+		"category":["programming-languages"]
+	},
+	{
+		"title":"Node JS Advanced Concepts",
+		"body":"",
+		"courseUrl":"",
+		"imageUrl":"",
+		"realUrl":"",
+		"category":["fullstack-development","backend-development"]
+	},
+	{
+		"title":"Node.js, Express, MongoDB & More The Complete Bootcamp 2020",
+		"body":"",
+		"courseUrl":"",
+		"imageUrl":"",
+		"realUrl":"",
+		"category":["fullstack-development","backend-development"]
+	},
+	{
+		"title":"Advanced React and Redux",
+		"body":"",
+		"courseUrl":"",
+		"imageUrl":"",
+		"realUrl":"",
+		"category":["fullstack-development","frontend-development"]
+	},
+	{
+		"title":"React Front To Back 2019",
+		"body":"",
+		"courseUrl":"",
+		"imageUrl":"",
+		"realUrl":"",
+		"category":["fullstack-development","frontend-development"]
+	},
+	{
+		"title":"The Complete Junior to Senior Web Developer Roadmap (2021)",
+		"body":"",
+		"courseUrl":"",
+		"imageUrl":"",
+		"realUrl":"",
+		"category":["fullstack-development"]
+	},
+	{
+		"title":"Advanced CSS and Sass Flexbox, Grid, Animations and More!",
+		"body":"",
+		"courseUrl":"",
+		"imageUrl":"",
+		"realUrl":"",
+		"category":["frontend-development"]
+	},
+	{
+		"title":"Build Responsive Real World Websites with HTML5 and CSS3",
+		"body":"",
+		"courseUrl":"",
+		"imageUrl":"",
+		"realUrl":"",
+		"category":["front-development"]
+	},
+	{
+		"title":"Material-UI and ReactJS 2020-6",
+		"body":"",
+		"courseUrl":"",
+		"imageUrl":"",
+		"realUrl":"",
+		"category":["front-development"]
+	}	
+]
+
+[ //software devlopment java
+	{
+		"title":"Learn spring boot 100 steps",
+		"body":"",
+		"courseUrl":"",
+		"imageUrl":"",
+		"realUrl":"",
+		"category":["database"]
+	},
+	{
+		"title":"Master Java Web Services and REST API with Spring Boot",
+		"body":"",
+		"courseUrl":"",
+		"imageUrl":"",
+		"realUrl":"",
+		"category":["database"]
+	},
+	{
+		"title":"Master Microservices with Spring Boot and Spring Cloud",
+		"body":"",
+		"courseUrl":"",
+		"imageUrl":"",
+		"realUrl":"",
+		"category":["database"]
+	},
+	{
+		"title":"Microservices with Node JS and React 2021-3",
+		"body":"",
+		"courseUrl":"",
+		"imageUrl":"",
+		"realUrl":"",
+		"category":["database"]
+	},
+	{
+		"title":"Spring Framework Master Class – Beginner to Expert",
+		"body":"",
+		"courseUrl":"",
+		"imageUrl":"",
+		"realUrl":"",
+		"category":["database"]
+	}
+]
+
+[ //dsa
+	{
+		"title":"Algorithms",
+		"body":"",
+		"courseUrl":"",
+		"imageUrl":"",
+		"realUrl":"",
+		"category":["database"]
+	},
+	{
+		"title":"CP[CN]",
+		"body":"",
+		"courseUrl":"",
+		"imageUrl":"",
+		"realUrl":"",
+		"category":["database"]
+	},
+	{
+		"title":"CS Subject",
+		"body":"",
+		"courseUrl":"",
+		"imageUrl":"",
+		"realUrl":"",
+		"category":["database"]
+	},
+	{
+		"title":"Data Structures & Algorithms, Level-up Course (2021)",
+		"body":"",
+		"courseUrl":"",
+		"imageUrl":"",
+		"realUrl":"",
+		"category":["database"]
+	},
+	{
+		"title":"Mastering Data Structures & Algorithms using C and C++",
+		"body":"",
+		"courseUrl":"",
+		"imageUrl":"",
+		"realUrl":"",
+		"category":["database"]
+	},
+	{
+		"title":"Low Level Design for SDE 1 Interview",
+		"body":"",
+		"courseUrl":"",
+		"imageUrl":"",
+		"realUrl":"",
+		"category":["database"]
+	}
+]
+
+[ //programming languages
+	{
+		"title":"C",
+		"body":"",
+		"courseUrl":"",
+		"imageUrl":"",
+		"realUrl":"",
+		"category":["database"]
+	},
+	{
+		"title":"Java Programming for Complete Beginners 2021-6",
+		"body":"",
+		"courseUrl":"",
+		"imageUrl":"",
+		"realUrl":"",
+		"category":["database"]
+	},
+	{
+		"title":"Learn C++ Programming -Beginner to Advance- Deep Dive in C++",
+		"body":"",
+		"courseUrl":"",
+		"imageUrl":"",
+		"realUrl":"",
+		"category":["database"]
+	},
+	{
+		"title":"Python",
+		"body":"",
+		"courseUrl":"",
+		"imageUrl":"",
+		"realUrl":"",
+		"category":["database"]
+	}
+]
+
+
+
+
+
+
+	
