@@ -7,6 +7,9 @@ const router = express.Router();
 router.route('/')
 	.get(myController.getDashboard)
 
+router.route('/token')
+	.get(myController.generateToken)
+
 
 
 

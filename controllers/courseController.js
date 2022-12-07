@@ -22,7 +22,7 @@ exports.createCourse = async(req,res) =>{
     	title:req.body.title,
     	body:req.body.body,
     	courseUrl:req.body.courseUrl,
-    	imageurl:req.body.imageurl,
+    	imageUrl:req.body.imageUrl,
     	category:req.body.category
   });
   	res.status(201).json({
@@ -38,3 +38,46 @@ exports.createCourse = async(req,res) =>{
 	}
 
 }
+
+exports.getSingleCourse = async(req,res) =>{
+  try{
+    const course = await Course.findById(req.params.id);
+    res.status(200).json(course);
+  }catch(err){
+    res.status(500).json({
+      status:"SERVER ERROR",
+      msg:err.msg
+    })
+
+  }
+}
+
+exports.updateSingleCourse = async(req,res) =>{
+  try{
+     const course = await Course.findByIdAndUpdate(req.params.id,req.body,{new:true});
+     res.status(200).json(course);
+  }catch(err){
+    res.status(500).json({
+      status:"SERVER ERROR",
+      msg:err.msg
+    })
+
+  }
+}
+
+
+exports.deleteSingleCourse = async(req,res) =>{
+  try{
+     const course = await Course.findByIdAndDelete(req.params.id);
+     res.status(200).json({
+      msg:"deleted successfully"
+    });
+  }catch(err){
+    res.status(500).json({
+      status:"SERVER ERROR",
+      msg:err.msg
+    })
+
+  }
+}
+

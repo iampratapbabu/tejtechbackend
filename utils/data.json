@@ -1,41 +1,49 @@
 [ //app development
 	{
 		"title":"Android Java Masterclass - Become an App Developer",
-		"body":"",
+		"body":"Improve your career options by learning Android app Development. Master Android Studio and build your first app today",
 		"courseUrl":"",
-		"imageUrl":"",
+		"imageUrl":"https://freecoursesite.com/storage/2018/10/919872_ed54_6.jpg",
 		"realUrl":"",
 		"category":["app-development","frontend-development"]
 	},
 	{
 		"title":"Angular - The Complete Guide (2022 Edition)",
-		"body":"",
+		"body":"Master Angular 13 (formerly “Angular 2”) and build awesome, reactive web apps with the successor of Angular.js",
 		"courseUrl":"",
-		"imageUrl":"",
+		"imageUrl":"https://freecoursesite.com/storage/2017/12/756150_c033_2-696x392.jpg",
 		"realUrl":"",
 		"category":["app-development","frontend-development"]
 	},
 	{
 		"title":"Flutter & Dart - The Complete Guide [2022 Edition]",
-		"body":"",
+		"body":"A Complete Guide to the Flutter SDK & Flutter Framework for building native iOS and Android apps",
 		"courseUrl":"",
-		"imageUrl":"",
+		"imageUrl":"https://freecoursesite.com/storage/2018/08/1708340_7108_2.jpg",
 		"realUrl":"",
 		"category":["app-development","frontend-development"]
 	},
 	{
 		"title":"Ionic - Build iOS, Android & Web Apps with Ionic & Angular",
-		"body":"",
+		"body":"Build Native iOS & Android as well as Progressive Web Apps with Angular, Capacitor and the Ionic Framework (Ionic 4+).",
 		"courseUrl":"",
-		"imageUrl":"",
+		"imageUrl":"https://www.filepicker.io/api/file/CJuJDJsxQoCcY0HCLGOU",
 		"realUrl":"",
 		"category":["app-development","frontend-development"]
 	},
 	{
-		"title":"React Native basics to advanced",
-		"body":"",
+		"title":"React Native Advanced Concepts",
+		"body":"Master the advanced topics of React Native: Animations, Maps, Notifications, Navigation and More!",
 		"courseUrl":"",
-		"imageUrl":"",
+		"imageUrl":"https://freecoursesite.com/storage/2018/04/1172996_0241_5.jpg",
+		"realUrl":"",
+		"category":["app-development","frontend-development"]
+	},
+	{
+		"title":"The Complete React Native + Hooks Course",
+		"body":"Understand React Native with Hooks, Context, and React Navigation.",
+		"courseUrl":"",
+		"imageUrl":"https://freecoursesite.com/storage/2019/10/959700_8bd2_11.jpg",
 		"realUrl":"",
 		"category":["app-development","frontend-development"]
 	}
