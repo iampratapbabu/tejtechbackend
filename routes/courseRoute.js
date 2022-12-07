@@ -1,11 +1,12 @@
 const express = require('express');
 const courseController = require('../controllers/courseController');
+const middle = require('../middlewares/middle');
 
 const router = express.Router();
 
 //get and create course
 router.route('/')
-	.get(courseController.demoMiddleware,courseController.getAllCourse);
+	.get(courseController.demoMiddleware,middle.myMiddle1,courseController.getAllCourse);
 router.route('/create-course')
 	.post(courseController.createCourse);
 	

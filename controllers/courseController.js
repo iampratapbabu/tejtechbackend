@@ -1,5 +1,6 @@
 const Course = require('../models/courseModel');
 const User = require('../models/userModel');
+const middle = require('../middlewares/middle');
 
 
 exports.demoMiddleware = (req,res,next) =>{
@@ -7,8 +8,15 @@ exports.demoMiddleware = (req,res,next) =>{
   next();
 };
 
+const normaldemo = () =>{
+   console.log("this is normal demo function");
+}
 
-exports.getAllCourse = async(req,res) =>{
+
+exports.getAllCourse = async(req,res,next) =>{
+  normaldemo();
+  
+  middle.myMiddle2();
   const courses = await Course.find();
   res.status(200).json({
     status:"success",
