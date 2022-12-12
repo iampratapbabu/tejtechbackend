@@ -26,7 +26,12 @@ exports.createUser = async(req,res) =>{
        lastname:req.body.lastname,
        email:req.body.email,
        password:req.body.password,
-       confirmpassword:req.body.confirmPassword
+       confirmpassword:req.body.confirmPassword,
+       role:req.body.role,
+       avatar:req.body.avatar,
+       gender:req.body.gender,
+       active:req.body.active
+
      });
      res.status(201).json({
        status:"success",
@@ -42,7 +47,8 @@ exports.createUser = async(req,res) =>{
 
 exports.loginUser = async(req,res) =>{
   try{
-    const user = await User.findOne({email:req.body.userid});
+    const user = await User.findOne({email:req.body.userid}).select('+password');
+    console.log(user);
     if(!user){
       res.status(403).json({
         "msg":"user not found"

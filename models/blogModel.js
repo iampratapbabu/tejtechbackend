@@ -12,7 +12,14 @@ const blogSchema = new mongoose.Schema({
     body:{
         type:String,
         required:[true,"Please Provide the Blog body"]
-    }
+    },
+    author:{
+        type:String
+    },
+    date:{
+        type:Date,
+        default:Date.now(),
+    },
    
 });
 

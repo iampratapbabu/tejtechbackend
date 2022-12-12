@@ -9,7 +9,14 @@ const courseSchema = new mongoose.Schema({
 		type:String,
 		required:[true,'Please provide the body for blog']
 	},
-	courseUrl:String,
+	courseUrl:{
+		type:String,
+		select:false,
+	},
+	password:{
+		type:String,
+		select:false
+	},
 	imageUrl:String,
 	realUrl:String,
 	category:{
