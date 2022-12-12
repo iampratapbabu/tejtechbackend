@@ -1,5 +1,6 @@
 const express = require("express");
 const morgan = require('morgan');
+const axios  = require('axios');
 
 //routes
 const myRouter = require("./routes/myRoute");
@@ -30,8 +31,26 @@ app.get('/',(req,res)=>{
 });
 
 //all route files
-app.use('/test',myRouter);
+//app.use('/test',myRouter);
 app.use('/user',myRouter);
+
+
+const myfunction = (req,res) =>{
+	res.status(200).json({"msg":"hello form the test route"});
+}
+
+app.get('/test',async(req,res,next)=>{
+	//res.send("test route runs")
+	
+	myfunction(req,res);
+	await axios.get('https://jsonplaceholder.typicode.com/users',{headers:{ "Accept-Encoding": "gzip,deflate,compress" }})
+	.then((res)=>{
+		console.log(res.data);
+	})
+	.catch(err=>{
+		console.log(err);
+	})
+})
 
 app.use('/api/courses',courseRouter);
 app.use('/api/blogs',blogsRouter);

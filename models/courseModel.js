@@ -21,7 +21,6 @@ const courseSchema = new mongoose.Schema({
 	realUrl:String,
 	category:{
 		type:[],
-		//enum:['app-development','fullstack-development','frontend-devlopment','backend-devlopment','dsa','programming-languages','datbase','blockchain','devops','system-desing','cs-subjects'],
 		default:'fullstack-development'
 	}
 

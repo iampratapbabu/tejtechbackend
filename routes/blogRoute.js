@@ -8,6 +8,9 @@ const router = express.Router();
 router.route('/')
 	.get(blogController.getAllBlogs)
 
+	router.route('/create-blog')
+	.post(blogController.createBlog)
+
 
 router.route('/single/:id')
   .get(blogController.getSingleBlog)
