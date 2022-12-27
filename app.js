@@ -39,6 +39,8 @@ const myfunction = (req,res) =>{
 	res.status(200).json({"msg":"hello form the test route"});
 }
 
+
+
 app.get('/test',async(req,res,next)=>{
 	//res.send("test route runs")
 	
@@ -50,7 +52,7 @@ app.get('/test',async(req,res,next)=>{
 	.catch(err=>{
 		console.log(err);
 	})
-})
+});
 
 app.use('/api/courses',courseRouter);
 app.use('/api/blogs',blogsRouter);

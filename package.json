@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build-dep":"npm install",
     "start": "nodemon server.js"
   },
   "author": "Tej Pratap",
