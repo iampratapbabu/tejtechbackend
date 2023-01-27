@@ -14,6 +14,7 @@
     "bcrypt": "^5.0.1",
     "dotenv": "^9.0.2",
     "express": "^4.17.1",
+    "fast-two-sms": "^3.0.0",
     "jose": "^4.10.3",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^5.12.10",

@@ -1,6 +1,7 @@
 const express = require('express');
 const userController = require('../controllers/userController');
-const emailController = require('../controllers/emailController')
+const emailController = require('../controllers/emailController');
+const smsController = require('../controllers/smsController')
 
 const router = express.Router();
 
@@ -18,6 +19,9 @@ const router = express.Router();
 
   router.route('/sendotp/:id')
   .get(emailController.sendOTP);
+
+  router.route('/sendsms')
+  .get(smsController.sendSMS)
 
 
 
