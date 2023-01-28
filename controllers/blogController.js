@@ -67,8 +67,11 @@ exports.getMyAllBlogs = async(req,res) =>{
 
 exports.getMySingleBlog = async(req,res) =>{
 	try{
-		const blog = await Blog.find({_id:req.params.blogid},{user:req.params.userid}).select('title body');
+		const blog = await Blog.findOne({_id:req.params.blogid}).select('title body author_user');
 		if(!blog){return res.status(400).json({status:"FAILURE",msg:"NO Record Found"})}
+		console.log(blog.author_user,req.params.userid)
+		if(blog.author_user != req.params.userid){return res.status(400).json({status:"FAILURE",msg:"No Blog Found for this user id"})}
+		//always use JSON.stringify or toString() method when comparing mongoose object ids
 		res.status(200).json({
 			status:"SUCCESS",
 			blog
@@ -100,14 +103,13 @@ exports.updateSingleBlog = async(req,res) =>{
 
 exports.deleteSingleBlog = async(req,res) =>{
 	try{
-		const blog = await Blog.find({_id:req.params.blogid},{user:req.params.userid});
+		const blog = await Blog.findOne({_id:req.params.blogid}).select('title body author_user');
 		if(!blog){return res.status(400).json({status:"FAILURE",msg:"NO Record Found"})}
-		console.log(blog[0])
-		console.log(blog[0].user,req.params.userid)
-		if(blog[0].user != req.params.userid){return res.status(400).json({status:"FAILURE",msg:"Your are Not Authorized"})}
+		console.log(blog.author_user,req.params.userid)
+		if(blog.author_user != req.params.userid){return res.status(400).json({status:"FAILURE",msg:"NOT AUTHORIZED"})}
 		blog.remove();
 		res.status(200).json({
-			status:"SUCCESS",
+			status:"REMOVED SUCCESSFULLY",
 			blog
 		});
 	}catch(err){
