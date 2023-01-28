@@ -13,15 +13,16 @@ const blogSchema = new mongoose.Schema({
         required:[true,"Please Provide the Blog body"]
     },
     slug:String,
-    author:{
-        type:String
-    },
     createdAt:{
         type:Date,
         default:Date.now(),
     },
-   
+    author_user:{
+        type:mongoose.Schema.ObjectId,
+        ref:'User'
+    },
 },
+
     //this is used for virtual populating
     {
         toJSON:{virtuals:true},

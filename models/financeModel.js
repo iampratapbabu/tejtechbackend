@@ -3,24 +3,16 @@ const mongoose = require('mongoose');
 const financeSchema = mongoose.Schema({
     balance_amount:{
         type:Number
-    },
-    type_of_expense:{
-        type:String,
-        enum: ['food','travel','rent','party','lend','miscllaneous'],
-        default:'miscllaneous'
-    },
-    lended_amount:[
-        {
-            amount:Number,
-            name:String
-        }
-    ],
+    },      
+    spent_amount:Number,
+    add_amount:Number,
     transactions:[
         {
             amount:Number,
-            type_of_transaction:{
+            type_of_expense:{
                 type:String,
-                enum:['add','substract']
+                enum: ['food','travel','rent','party','lend','miscllaneous','added_amount'],
+                default:'miscllaneous'
             },
             time_of_transaction:{
                 type:Date,
@@ -29,6 +21,10 @@ const financeSchema = mongoose.Schema({
             
         }
     ],
+    last_updated:{
+        type:Date,
+        default:Date.now()
+    },
     user:{
         type:mongoose.Schema.ObjectId,
         ref:'User'

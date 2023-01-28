@@ -11,6 +11,9 @@ router.route('/:id')
 .post(financeController.createMyFinance)
 .patch(financeController.updateMyFinance);
 
+router.route('/status/:id')
+.get(financeController.myFinanceInfo)
+
 
 
 
