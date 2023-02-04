@@ -11,9 +11,9 @@ exports.getAllUsers = async(req,res)=>{
     });
   }catch(err){
     res.status(500).json({
-      "error":"manual error message",
-      "error msg":err.message
-    });
+      status:"[SERVER ERROR]",
+      errormsg:err
+    })
   }
 }
 
@@ -21,8 +21,8 @@ exports.signup = async(req,res,err) =>{
   try{
     const {firstname,lastname,email,phone,password,confirmPassword} = req.body;
     const checkuser = await User.findOne({email:email});
-    if(checkuser){return res.status(200).json({status:"Fail",msg:"user already exists with this email"})};
-    if(password != confirmPassword){return res.status(200).json({status:"Fail",msg:"Password Not matches"})};
+    if(checkuser){return res.status(200).json({status:"fail",msg:"user already exists with this email"})};
+    if(password != confirmPassword){return res.status(200).json({status:"fail",msg:"Password Not matches"})};
      const user = new User({
       firstname,
       lastname,
@@ -36,13 +36,14 @@ exports.signup = async(req,res,err) =>{
       expiresIn: 86400 // expires in 24 hours
     });
       res.status(200).json({
+        status:"success",
         auth:true,
         token,
         user,
       })
   }catch(err){
     res.status(500).json({
-      status:"Manul Error message[SERVER ERROR]",
+      status:"[SERVER ERROR]",
       errormsg:err
     })
   }
@@ -54,6 +55,7 @@ exports.loginUser = async(req,res) =>{
     console.log(user);
     if(!user){
       res.status(403).json({
+        status:"faile",
         "msg":"user not found"
       })
     }
@@ -62,13 +64,14 @@ exports.loginUser = async(req,res) =>{
         expiresIn: 86400 // expires in 24 hours
       });
       res.status(200).json({
+        status:"success",
         auth:true,
         token,
         user,
       })
 
     }else{
-      res.json({"msg":"Credentials invalid"});
+      res.json({status:"fail",msg:"Credentials invalid"});
     }
 
   }catch(err){
@@ -88,11 +91,11 @@ exports.protect = async (req, res,next) => {
     }
 
     jwt.verify(token, process.env.JWT_SECRET_KEY , (err, decoded) => {
-        if (err) return res.status(500).json({ auth: false, message: 'Failed to authenticate token.' });
+        if (err) return res.status(500).json({ status:"fail",auth: false, message: 'Failed to authenticate token.' });
 
         User.findById(decoded.id, (err, user) => {
-            if (err) return res.status(500).json({auth:false,messge:"There was a problem finding the user."});
-            if (!user) return res.status(404).json({auth:false,message:"No user found"});
+            if (err) return res.status(500).json({status:"fail",auth:false,messge:"There was a problem finding the user."});
+            if (!user) return res.status(404).json({status:"fail",auth:false,message:"No user found"});
             req.user=user;
             next();
         });
