@@ -39,10 +39,16 @@ exports.signup = async(req,res) =>{
     });
 
   }catch(err){
-    res.status(500).json({
-      status:"Manul Error message[SERVER ERROR]",
-      errormsg:err
-    })
+    if(err.code === 11000){
+      res.status(500).json({
+        err:err.message,
+        errormsg:"Email already exists"
+      })
+    }
+    // res.status(500).json({
+    //   status:"Manul Error message[SERVER ERROR]",
+    //   errormsg:err
+    // })
   }
 }
 
