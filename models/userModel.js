@@ -19,18 +19,6 @@ const userSchema = new mongoose.Schema({
     required: [true, "password is required"],
     select: false,
   },
-  confirmPassword: {
-    type: String,
-    required: [true, "confirm password is required"],
-    select: false,
-    validate: {
-      validator: function (el) {
-        return el === this.password;
-      },
-      message: "Password Do Not Match",
-    },
-
-  },
   phone:String,
   gender: {
     type: String,

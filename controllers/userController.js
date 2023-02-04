@@ -22,6 +22,7 @@ exports.signup = async(req,res,err) =>{
     const {firstname,lastname,email,phone,password,confirmPassword} = req.body;
     const checkuser = await User.findOne({email:email});
     if(checkuser){return res.status(200).json({status:"Fail",msg:"user already exists with this email"})};
+    if(password != confirmPassword){return res.status(200).json({status:"Fail",msg:"Password Not matches"})};
      const user = new User({
       firstname,
       lastname,
