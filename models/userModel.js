@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    unique: [true,"Email already exists"],
+    unique: true,
     required: [true, "Please Provide your email"]
 
   },
@@ -61,26 +61,6 @@ const userSchema = new mongoose.Schema({
   passwordResetExpires: Date
 
 });
-
-// userSchema.post('save', function(error, doc, next) {
-//   if (error.name === 'MongoError' && error.code === 11000) {
-//     next(new Error('email must be unique'));
-//   } else {
-//     next(error);
-//   }
-// });
-
-userSchema.post('save', function (err) {
-  if (err) {
-    return res.status(400).send({
-        message: (err.name === 'MongoError' && err.code === 11000) ? 'Email already exists !' : errorHandler.getErrorMessage(err)
-    });
-  }
-  else {
-    return console.log('No Error');
-  }
-});
-
 
 
 const Blog = mongoose.model('User', userSchema);

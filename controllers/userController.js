@@ -17,9 +17,11 @@ exports.getAllUsers = async(req,res)=>{
   }
 }
 
-exports.signup = async(req,res) =>{
+exports.signup = async(req,res,err) =>{
   try{
     const {firstname,lastname,email,phone,password,confirmPassword} = req.body;
+    const checkuser = await User.findOne({email:email});
+    if(checkuser){return res.status(200).json({status:"Fail",msg:"user already exists with this email"})};
      const user = new User({
       firstname,
       lastname,
@@ -28,27 +30,20 @@ exports.signup = async(req,res) =>{
       password,
       confirmPassword
     });
-    await user.save();
+    user.save();
     let token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, {
       expiresIn: 86400 // expires in 24 hours
     });
-    res.status(200).json({
-      auth:true,
-      token,
-      user,
-    });
-
-  }catch(err){
-    if(err.code === 11000){
-      res.status(500).json({
-        err:err.message,
-        errormsg:"Email already exists"
+      res.status(200).json({
+        auth:true,
+        token,
+        user,
       })
-    }
-    // res.status(500).json({
-    //   status:"Manul Error message[SERVER ERROR]",
-    //   errormsg:err
-    // })
+  }catch(err){
+    res.status(500).json({
+      status:"Manul Error message[SERVER ERROR]",
+      errormsg:err
+    })
   }
 }
 
