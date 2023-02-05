@@ -55,7 +55,7 @@ exports.loginUser = async(req,res) =>{
     console.log(user);
     if(!user){
       res.status(403).json({
-        status:"faile",
+        status:"fail",
         "msg":"user not found"
       })
     }
@@ -76,7 +76,7 @@ exports.loginUser = async(req,res) =>{
 
   }catch(err){
     res.status(500).json({
-      status:"Manul Error message[SERVER ERROR]",
+      status:"[SERVER ERROR]",
       errormsg:err.message
     })
   }
