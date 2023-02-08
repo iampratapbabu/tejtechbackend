@@ -7,6 +7,7 @@ const router = express.Router();
 
 router.route('/')
 .get(blogController.getAllBlogs)
+.post(blogController.createManyBlogs);
 
 router.route('/single/:blogid')
 .get(blogController.getSingleBlog)

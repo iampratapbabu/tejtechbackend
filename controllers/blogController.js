@@ -27,6 +27,21 @@ exports.getSingleBlog = async(req,res) =>{
 
 }
 
+exports.createManyBlogs = async(req,res) =>{
+	try{
+		const blogs  = await Blog.insertMany(req.body);
+		res.status(200).json({
+			status:"SUCCESS",
+			blogs
+		});
+	}catch(err){
+        res.status(500).json({
+            error: "[SERVER ERROR]",
+            errormsg: err.message
+        });
+    }
+}
+
 exports.createSingleBlog =  (req,res)=>{
 	try{
 		let blog={};
