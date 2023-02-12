@@ -4,8 +4,6 @@ const financeSchema = mongoose.Schema({
     balance_amount:{
         type:Number
     },      
-    spent_amount:Number,
-    add_amount:Number,
     transactions:[
         {
             amount:Number,
