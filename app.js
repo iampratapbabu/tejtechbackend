@@ -17,7 +17,7 @@ if(process.env.NODE_ENV="development"){
 	app.use(morgan('dev'));
 };
 
-//for making request without error with react
+//for making request without errors
 //in official language called cors error handling
 app.use((req,res,next) =>{
 	//res.header("Access-Control-Allow-Credentials","true");
