@@ -3,7 +3,6 @@ const morgan = require('morgan');
 const axios  = require('axios');
 
 //routes
-const myRouter = require("./routes/myRoute");
 const courseRouter = require("./routes/courseRoute");
 const blogsRouter = require("./routes/blogRoute");
 const userRouter = require("./routes/userRoute");
@@ -33,7 +32,6 @@ app.get('/',(req,res)=>{
 
 //all route files
 //app.use('/test',myRouter);
-app.use('/user',myRouter);
 
 
 const myfunction = (req,res) =>{
@@ -58,7 +56,6 @@ app.get('/test',async(req,res,next)=>{
 app.use('/api/courses',courseRouter);
 app.use('/api/blogs',blogsRouter);
 app.use('/api/users',userRouter);
-app.use('/api/myroute',myRouter);
 app.use('/api/finance',financeRouter);
 
 

@@ -11,8 +11,6 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     unique: true,
-   
-
   },
   password: {
     type: String,
@@ -40,6 +38,12 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
+  targetExpense:{
+    type:Number
+  },
+  totalExpense:{
+    type:Number
+  },
   createAt:{
     type:Date,
     default:Date.now(),
@@ -51,6 +55,6 @@ const userSchema = new mongoose.Schema({
 });
 
 
-const Blog = mongoose.model('User', userSchema);
+const User = mongoose.model('User', userSchema);
 
-module.exports = Blog;
+module.exports = User;

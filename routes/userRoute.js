@@ -17,6 +17,11 @@ const router = express.Router();
   router.route('/protect')
   .get(userController.protect,userController.getMe)
 
+  router.route('/protect')
+  .get(userController.protect,userController.getMe)
+
+
+
   router.route('/sendotp/:id')
   .get(emailController.sendOTP);
 

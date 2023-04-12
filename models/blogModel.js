@@ -22,7 +22,6 @@ const blogSchema = new mongoose.Schema({
         ref:'User'
     },
 },
-
     //this is used for virtual populating
     {
         toJSON:{virtuals:true},

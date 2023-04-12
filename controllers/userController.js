@@ -1,28 +1,24 @@
 const User = require('../models/userModel');
+const {errorResponse,successResponse} = require('../lib/responseHandler');
 const jwt = require('jsonwebtoken');
 
 
-exports.getAllUsers = async(req,res)=>{
+const getAllUsers = async(req,res)=>{
   try{
     const users = await User.find();
-    res.status(200).json({
-      total:users.length,
-      users
-    });
+    successResponse(res,'successfully fetched all users',200,{totat_users:users.length,users});
+
   }catch(err){
-    res.status(500).json({
-      status:"[SERVER ERROR]",
-      errormsg:err
-    })
+    errorResponse(res,'users data could not be fetched',500,err);
   }
 }
 
-exports.signup = async(req,res,err) =>{
+const signup = async(req,res,err) =>{
   try{
     const {firstname,lastname,email,phone,password,confirmPassword} = req.body;
     const checkuser = await User.findOne({email:email});
-    if(checkuser){return res.status(200).json({status:"fail",msg:"user already exists with this email"})};
-    if(password != confirmPassword){return res.status(200).json({status:"fail",msg:"Password Not matches"})};
+    if(checkuser){return errorResponse(res,'user already exists',200,null);};
+    if(password != confirmPassword){return errorResponse(res,'password not matches',200,null);};
      const user = new User({
       firstname,
       lastname,
@@ -35,86 +31,69 @@ exports.signup = async(req,res,err) =>{
     let token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, {
       expiresIn: 86400 // expires in 24 hours
     });
-      res.status(200).json({
-        status:"success",
-        auth:true,
-        token,
-        user,
-      })
+
+    successResponse(res,'user registration successfull',200,{token,user});
+
   }catch(err){
-    res.status(500).json({
-      status:"[SERVER ERROR]",
-      errormsg:err
-    })
+    errorResponse(res,'users registration failure',500,err);
   }
 }
 
-exports.loginUser = async(req,res) =>{
+const loginUser = async(req,res) =>{
   try{
     const user = await User.findOne({email:req.body.userid}).select('+password');
     console.log(user);
     if(!user){
-      res.status(403).json({
-        status:"fail",
-        "msg":"user not found"
-      })
+      return errorResponse(res,'user not exist',200,null);
     }
     else if(user.password == req.body.password){
       let token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, {
         expiresIn: 86400 // expires in 24 hours
       });
-      res.status(200).json({
-        status:"success",
-        auth:true,
-        token,
-        user,
-      })
-
+      successResponse(res,'user loggedin successfully',200,{token,user});
     }else{
-      res.json({status:"fail",msg:"Credentials invalid"});
+      errorResponse(res,'invalid credentials',200,null);
     }
-
   }catch(err){
-    res.status(500).json({
-      status:"[SERVER ERROR]",
-      errormsg:err.message
-    })
+    errorResponse(res,'login error',200,null);
   }
 }
 
-exports.protect = async (req, res,next) => {
+const protect = async (req, res,next) => {
   try {
     let token = req.headers['x-access-token'];
     console.log(token);
     if(!token){
-        res.status(401).json({auth:false,message:"Failed to Authenticate"});
+        return errorResponse(res,'failed to authenticate',401,null);
     }
 
     jwt.verify(token, process.env.JWT_SECRET_KEY , (err, decoded) => {
-        if (err) return res.status(500).json({ status:"fail",auth: false, message: 'Failed to authenticate token.' });
+        if (err) return errorResponse(res,'failed to authenticate token',401,null);;
 
         User.findById(decoded.id, (err, user) => {
-            if (err) return res.status(500).json({status:"fail",auth:false,messge:"There was a problem finding the user."});
-            if (!user) return res.status(404).json({status:"fail",auth:false,message:"No user found"});
+            if (err) return errorResponse(res,'error finding the user with the token',401,null);
+            if (!user) return errorResponse(res,'no user found',404,null);
             req.user=user;
             next();
         });
     });
   } catch (err) {
-    res.status(500).json({
-      status: "Manul Error message[SERVER ERROR]",
-      errormsg: err.message
-    })
+    errorResponse(res,'protect middleare error',404,null);
   }
 }
 
-exports.getMe = (req,res) =>{
+const getMe = (req,res) =>{
   try{
-    res.status(200).json(req.user)
+    successResponse(res,'user loggedin successfully',200,req.user);
   }catch (err) {
-    res.status(500).json({
-      status: "Manul Error message[SERVER ERROR]",
-      errormsg: err.message
-    })
+    errorResponse(res,'user finding error',500,null);
   }
+}
+
+module.exports={
+  getAllUsers,
+  signup,
+  loginUser,
+  protect,
+  getMe
 }

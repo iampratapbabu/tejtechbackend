@@ -1,32 +1,23 @@
 const mongoose = require('mongoose');
 
 const financeSchema = mongoose.Schema({
-    balance_amount:{
+    userid:{
+        type:mongoose.Schema.ObjectId,
+        ref:'User'
+    },
+    transferredAmount:{
         type:Number
-    },      
-    transactions:[
-        {
-            amount:Number,
-            type_of_expense:{
-                type:String,
-                enum: ['food','travel','rent','party','lend','miscllaneous','added_amount'],
-                default:'miscllaneous'
-            },
-            time_of_transaction:{
-                type:Date,
-                default:Date.now()
-            }
-            
-        }
-    ],
+    },
+    isDebit:Boolean,
+    type_of_expense:{
+        type:String,
+        enum:['food','fuel','clothes','electronics','rent','emi']
+    },
     last_updated:{
         type:Date,
         default:Date.now()
     },
-    user:{
-        type:mongoose.Schema.ObjectId,
-        ref:'User'
-    },
+
 });
 
 const Finance = mongoose.model('Finance',financeSchema);
