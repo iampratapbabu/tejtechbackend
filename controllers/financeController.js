@@ -1,20 +1,6 @@
 const Finance = require('../models/financeModel');
+const {errorResponse,successResponse} = require('../lib/responseHandler');
 
-const getAll = async(req,res) =>{
-    try{
-        const finance = await Finance.find();
-        res.status(200).json({
-            status:"success",
-            finance
-        })        
-
-    }catch(err){
-        res.status(500).json({
-            error: "manual error message[SERVER ERROR]",
-            errormsg: err.message
-        });
-    }
-}
 
 const createMyFinance = async(req,res) =>{
     try{
@@ -121,4 +107,4 @@ const myFinanceInfo = async(req,res)=>{
 
 
 
-module.exports={getAll,createMyFinance,getMyFinance,updateMyFinance,myFinanceInfo};
+module.exports={createMyFinance,getMyFinance,updateMyFinance,myFinanceInfo};

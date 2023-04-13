@@ -21,14 +21,12 @@ const sendOTP = async (req, res) => {
     try {
         const otp = `${Math.floor(1000 + Math.random() * 9000)}`;
         const id = req.params.id;
-
-
-        //res.send("landlord");
+      
         const user = await User.findById(id);
         user.otp = otp;
         user.save();
         let mailOptions = {
-            from: `process.env.EMAIL_USERNAME`,
+            from: `${process.env.EMAIL_USERNAME}`,
             // to: user.email,
             to: 'kumarpratap.5463@gmail.com',
             subject: "OTP Verification",
@@ -252,7 +250,7 @@ const verifyOTP = async (req, res) => {
             user.verified = true;
             user.save();
             let mailOptions = {
-                from: `process.env.EMAIL_USERNAME`,
+                from: `${process.env.EMAIL_USERNAME}`,
                 to: user.email,
                 subject: "Account Verified",
                 // text:`OTP for Your account verification is ${otp}`
