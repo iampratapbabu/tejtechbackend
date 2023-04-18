@@ -6,7 +6,7 @@ const axios  = require('axios');
 const courseRouter = require("./routes/courseRoute");
 const blogsRouter = require("./routes/blogRoute");
 const userRouter = require("./routes/userRoute");
-const financeRouter = require("./routes/financeRoute");
+const transactionRouter = require("./routes/transactionRoute");
 
 const app=express();
 app.use(express.json());
@@ -56,7 +56,7 @@ app.get('/test',async(req,res,next)=>{
 app.use('/api/courses',courseRouter);
 app.use('/api/blogs',blogsRouter);
 app.use('/api/users',userRouter);
-app.use('/api/finance',financeRouter);
+app.use('/api/transactions',transactionRouter);
 
 
 

@@ -18,7 +18,7 @@ router.route('/protect')
   .get(userController.protect, userController.getMe)
 
 router.route('/sendotp/:id')
-  .get(emailController.sendOTP);
+  .get(emailController.sendOTP)
 
 router.route('/sendsms')
   .get(smsController.sendSMS)

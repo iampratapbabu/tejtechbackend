@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const financeSchema = mongoose.Schema({
+const transactionSchema = mongoose.Schema({
     userid:{
         type:mongoose.Schema.ObjectId,
         ref:'User'
@@ -9,16 +9,16 @@ const financeSchema = mongoose.Schema({
         type:Number
     },
     isDebit:Boolean,
-    type_of_expense:{
+    typeOfExpense:{
         type:String,
         enum:['food','fuel','clothes','electronics','rent','emi']
     },
-    last_updated:{
+    lastUpdated:{
         type:Date,
         default:Date.now()
     },
 
 });
 
-const Finance = mongoose.model('Finance',financeSchema);
-module.exports=Finance;
+const Transaction = mongoose.model('Finance',transactionSchema);
+module.exports=Transaction;

@@ -17,7 +17,7 @@ const blogSchema = new mongoose.Schema({
         type:Date,
         default:Date.now(),
     },
-    author_user:{
+    authorUser:{
         type:mongoose.Schema.ObjectId,
         ref:'User'
     },

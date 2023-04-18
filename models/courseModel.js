@@ -12,13 +12,21 @@ const courseSchema = new mongoose.Schema({
 	courseUrl:{
 		type:String,
 		select:false,
+		default:null,
 	},
-	password:{
+	coursePassword:{
 		type:String,
-		select:false
+		select:false,
+		default:null
 	},
-	imageUrl:String,
-	realUrl:String,
+	imageUrl:{
+		type:String,
+		default:null,
+	},
+	realUrl:{
+		type:String,
+		default:null,
+	},
 	category:{
 		type:[],
 		default:'fullstack-development'

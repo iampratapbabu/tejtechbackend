@@ -2,14 +2,17 @@ const mongoose = require('mongoose');
 
 
 const userSchema = new mongoose.Schema({
-  firstname: {
+  firstName: {
     type: String,
+    required:[true,"firstname is required"]
   },
-  lastname: {
+  lastName: {
     type: String,
+    required:[true,"firstname is required"]
   },
   email: {
     type: String,
+    required:[true,"email is required"],
     unique: true,
   },
   password: {
@@ -17,11 +20,22 @@ const userSchema = new mongoose.Schema({
     required: [true, "password is required"],
     select: false,
   },
-  phone:String,
+  phone:{
+    type:Number,
+    default:null
+  },
+  countryCode:{
+    type:Number,
+    default:null
+  },
   gender: {
     type: String,
+    default:null
   },
-  otp:Number,
+  otp:{
+    type:Number,
+    default:null
+  },
   verified:{
     type:Boolean,
     default:false
@@ -33,16 +47,19 @@ const userSchema = new mongoose.Schema({
   },
   avatar: {
     type: String,
+    default:null
   },
   active: {
     type: Boolean,
     default: true,
   },
   targetExpense:{
-    type:Number
+    type:Number,
+    default:0,
   },
   totalExpense:{
-    type:Number
+    type:Number,
+    default:0
   },
   createAt:{
     type:Date,
