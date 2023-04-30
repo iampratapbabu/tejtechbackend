@@ -62,7 +62,6 @@ const loginUser = async(req,res) =>{
 const protect = async (req, res,next) => {
   try {
     let token = req.headers['x-access-token'];
-    console.log(token);
     if(!token){
         return errorResponse(res,'failed to authenticate',401,null);
     }
