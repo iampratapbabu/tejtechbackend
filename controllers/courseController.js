@@ -1,6 +1,6 @@
 const Course = require('../models/courseModel');
 const User = require('../models/userModel');
-const middle = require('../middlewares/middle');
+const middle = require('../middlewares/authMiddle');
 
 
 exports.demoMiddleware = (req,res,next) =>{
