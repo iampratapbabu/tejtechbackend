@@ -36,7 +36,7 @@ const userSchema = new mongoose.Schema({
     type:Number,
     default:null
   },
-  verified:{
+  verifiedAt:{
     type:Boolean,
     default:false
   },

@@ -1,8 +1,8 @@
 const express = require('express');
 const userController = require('../controllers/userController');
-const emailController = require('../controllers/emailController');
+const emailController = require('../utils/emailController');
 const authMiddle = require("../middlewares/authMiddle")
-const smsController = require('../controllers/smsController')
+const smsController = require('../utils/smsController')
 
 const router = express.Router();
 
@@ -25,6 +25,8 @@ router.route('/sendotp/:id')
 router.route('/sendsms')
   .get(smsController.sendSMS)
 
-
+  router.route('/transactions')
+  .get(authMiddle.protect, userController.getAllTransactions)
+  .post(authMiddle.protect,userController.createTransaction)
 
 module.exports = router;

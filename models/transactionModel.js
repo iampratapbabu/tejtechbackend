@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
 
 const transactionSchema = mongoose.Schema({
-    userid:{
+    userId:{
         type:mongoose.Schema.ObjectId,
-        ref:'User'
+        ref:'User',
+        required:[true,"userId is required"]
     },
     transferredAmount:{
         type:Number
@@ -20,5 +21,5 @@ const transactionSchema = mongoose.Schema({
 
 });
 
-const Transaction = mongoose.model('Finance',transactionSchema);
+const Transaction = mongoose.model('Transaction',transactionSchema);
 module.exports=Transaction;
