@@ -9,9 +9,9 @@ const router = express.Router();
 router.route('/')
   .get(userController.getAllUsers)
 
-  //auth routes
+//AUTH ROUTES
 router.route('/signup')
-  .post(userController.signup)
+  .post(userController.uploadImage,userController.signup)
 
 router.route('/login')
   .post(userController.loginUser)
@@ -19,6 +19,14 @@ router.route('/login')
 router.route('/getme')
   .get(authMiddle.protect, userController.getMe)
 
+//EDIT AND DELETE ROUTES
+router.route('/single')
+  .patch(authMiddle.protect,userController.uploadImage, userController.editUser)
+  .post(authMiddle.protect, userController.setExpense)
+  .delete(authMiddle.protect, userController.deleteUser)
+
+
+//UTILS ROUTES
 router.route('/sendotp/:id')
   .get(emailController.sendOTP)
 

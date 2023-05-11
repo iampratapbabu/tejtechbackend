@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
   },
   lastName: {
     type: String,
-    required:[true,"firstname is required"]
+    required:[true,"lastname is required"]
   },
   email: {
     type: String,
@@ -22,7 +22,8 @@ const userSchema = new mongoose.Schema({
   },
   phone:{
     type:Number,
-    default:null
+    required:[true,"phone number is required"],
+    unique: true,
   },
   countryCode:{
     type:Number,
@@ -32,20 +33,16 @@ const userSchema = new mongoose.Schema({
     type: String,
     default:null
   },
-  otp:{
-    type:Number,
-    default:null
-  },
   verifiedAt:{
-    type:Boolean,
-    default:false
+    type:Date,
+    default:null
   },
   role: {
     type: String,
     enum: ['user', 'developer', 'admin'],
     default: 'user'
   },
-  avatar: {
+  photo: {
     type: String,
     default:null
   },
