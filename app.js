@@ -1,7 +1,6 @@
 const express = require("express");
 const morgan = require('morgan');
-const axios  = require('axios');
-const courseRouter = require("./routes/courseRoute");
+const adminRouter = require("./routes/adminRoute");
 const userRouter = require("./routes/userRoute");
 
 const app=express();
@@ -28,7 +27,7 @@ app.get('/',(req,res)=>{
 
 
 //routing middlewares
-app.use('/api/courses',courseRouter);
+app.use('/api/admin',adminRouter);
 app.use('/api/users',userRouter);
 
 

@@ -12,7 +12,7 @@ const transactionSchema = mongoose.Schema({
     isDebit:Boolean,
     typeOfExpense:{
         type:String,
-        enum:['food','fuel','clothes','electronics','rent','emi']
+        enum:['food','fuel','clothes','electronics','rent','emi','others']
     },
     lastUpdated:{
         type:Date,

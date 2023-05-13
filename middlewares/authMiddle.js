@@ -20,11 +20,25 @@ const protect = async (req, res,next) => {
         });
     });
   } catch (err) {
-    errorResponse(res,'protect middleare error',404,err);
+    errorResponse(res,'protect middleare',500,err);
+  }
+}
+
+const checkAdmin = async(req,res,next) =>{
+  try{
+    if(req.user.role == "admin"){
+      next();
+    }else{
+      errorResponse(res,'you are not an admin',400,"Authorization failed");
+    }
+
+  }catch(err){
+    errorResponse(res,'checkAdmin ',404,err);
   }
 }
 
 
 module.exports={
   protect,
+  checkAdmin,
 };

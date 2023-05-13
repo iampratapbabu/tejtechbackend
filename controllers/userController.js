@@ -81,7 +81,7 @@ const signup = async(req,res,err) =>{
       user.photo = req.file.path;
     }
 
-    user.save();
+    await user.save();
     let token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, {
       expiresIn: 86400 // expires in 24 hours
     });
@@ -146,16 +146,21 @@ const editUser = async(req,res) =>{
   }
 }
 
-const setExpense = (req,res) =>{
+const setExpense = async(req,res) =>{
   try{
-    successResponse(res,'user info',200,req.user);
+    const {targetExpense} = req.body;
+    let user = await User.findById(req.user._id);
+    user.targetExpense = targetExpense
+    await user.save();
+    successResponse(res,'target expense updated',200,user.targetExpense);
   }catch (err) {
     errorResponse(res,'setExpense',500,err);
   }
 }
 
 
-const deleteUser = (req,res) =>{
+//admin function
+const deleteUser = async(req,res) =>{
   try{
     successResponse(res,'user info',200,req.user);
   }catch (err) {
