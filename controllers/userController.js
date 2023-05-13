@@ -1,6 +1,5 @@
 const User = require('../models/userModel');
 const Transaction = require('../models/transactionModel');
-
 const {errorResponse,successResponse} = require('../lib/responseHandler');
 const jwt = require('jsonwebtoken');
 const fs=require('fs');
@@ -137,10 +136,10 @@ const editUser = async(req,res) =>{
 
     if (req.file) {
       user.photo = req.file.path;
+      console.log("photo updated of",user.firstName);
     }
 
     await user.save();
-      
     successResponse(res,'user info updated',200,user);
   }catch (err) {
     errorResponse(res,'editUser',500,err);
@@ -151,7 +150,7 @@ const setExpense = (req,res) =>{
   try{
     successResponse(res,'user info',200,req.user);
   }catch (err) {
-    errorResponse(res,'deleteUser',500,err);
+    errorResponse(res,'setExpense',500,err);
   }
 }
 

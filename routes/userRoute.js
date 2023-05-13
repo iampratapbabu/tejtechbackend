@@ -27,8 +27,10 @@ router.route('/single')
 
 
 //UTILS ROUTES
-router.route('/sendotp/:id')
-  .get(emailController.sendOTP)
+router.route('/sendotp')
+  .post(emailController.sendOTP)
+router.route('/verifyotp')
+  .post(emailController.verifyOTP)
 
 router.route('/sendsms')
   .get(smsController.sendSMS)

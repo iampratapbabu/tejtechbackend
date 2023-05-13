@@ -1,37 +1,45 @@
-const User = require('../models/userModel');
+const Otp = require('../models/otpModel');
 const nodemailer = require('nodemailer');
-
+const { errorResponse, successResponse } = require('../lib/responseHandler');
 const dotenv = require("dotenv");
 dotenv.config({ path: "./config.env" });
 
 //mail transporter
 let transporter = nodemailer.createTransport({
-    service: 'gmail',
-    host: 'smtp.gmail.com',
-    secure: false,
-    auth: {
-        user: process.env.EMAIL_USERNAME,
-        pass: process.env.EMAIL_PASSWORD
-    }
+  service: 'gmail',
+  host: 'smtp.gmail.com',
+  secure: false,
+  auth: {
+    user: process.env.EMAIL_USERNAME,
+    pass: process.env.EMAIL_PASSWORD
+  }
 });
 
 
 
 const sendOTP = async (req, res) => {
-    try {
-        const otp = `${Math.floor(1000 + Math.random() * 9000)}`;
-        const id = req.params.id;
-      
-        const user = await User.findById(id);
-        user.otp = otp;
-        user.save();
-        let mailOptions = {
-            from: `${process.env.EMAIL_USERNAME}`,
-            // to: user.email,
-            to: 'kumarpratap.5463@gmail.com',
-            subject: "OTP Verification",
-            // text:`OTP for Your account verification is ${otp}`
-            html: `<html xmlns="http://www.w3.org/1999/xhtml">
+  try {
+    const otp = `${Math.floor(1000 + Math.random() * 9000)}`;
+    const { email } = req.body;
+    let existedOtp = await Otp.findOne({ email });
+    if (!existedOtp) {
+      let newOtp = new Otp({
+        email,
+        otp
+      });
+      await newOtp.save();
+    } else {
+      existedOtp.otp = otp;
+      await existedOtp.save();
+    }
+
+    let mailOptions = {
+      from: `${process.env.EMAIL_USERNAME}`,
+      // to: user.email,
+      to: email,
+      subject: "OTP Verification",
+      // text:`OTP for Your account verification is ${otp}`
+      html: `<html xmlns="http://www.w3.org/1999/xhtml">
                 <head>
                   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
                   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -217,74 +225,56 @@ const sendOTP = async (req, res) => {
                   </center>
                 </body>
                 </html>`
-        }
-        transporter.sendMail(mailOptions, (error, res) => {
-            if (error) { console.log(error) }
-            else {
-                console.log("email sent", res)
-            }
-        })
-        return res.status(200).json({
-            status: "Email sent successfully",
-            user
-        })
-
-
-    } catch (err) {
-        res.status(500).json({
-            error: "manual error message",
-            errormsg: err.message
-        });
     }
+    transporter.sendMail(mailOptions, (error, email_res) => {
+      if (error) { errorResponse(res, 'Error sending mail', 500, error); }
+      else {
+        console.log("Email sent to", email_res)
+        return successResponse(res, 'Email sent successfully', 200, email_res);
+      }
+    })
+
+  } catch (err) {
+    errorResponse(res, 'sendOTP', 500, err);
+  }
 }
 
 const verifyOTP = async (req, res) => {
-    try {
-        const { otp } = req.body;
-        const id = req.params.id;
-        let email_response;
+  try {
+    const { type, email, otp } = req.body;
+    if(type == "resend"){
+      sendOTP(req,res);
+    }else{
+    let existedOtp = await Otp.findOne({email});
+    if(!existedOtp){errorResponse(res, 'no otp sent to this mail', 400, "failed");}
+    if (existedOtp.otp == otp) {
 
-        //res.send("landlord");
-        const user = await user.findById(id);
-        if (user.otp == otp) {
-            user.verified = true;
-            user.save();
-            let mailOptions = {
-                from: `${process.env.EMAIL_USERNAME}`,
-                to: user.email,
-                subject: "Account Verified",
-                // text:`OTP for Your account verification is ${otp}`
-                html: `Your account is successfully <b>verified</b>`
-            }
-            transporter.sendMail(mailOptions, (error, res) => {
-                if (error) { console.log(error) }
-                else {
-                    console.log("email sent", res);
-                    email_response = res;
-                }
-            })
+      return successResponse(res, 'Otp verified', 200, "email verified");
 
-            return res.status(200).json({
-                status: "Email sent successfully",
-                email_response,
-                user
-            })
-        } else {
-            res.status(400).json({
-                status: "Failed",
-                msg: "OTP doesnot matches Please try again"
-            })
+      let mailOptions = {
+        from: `${process.env.EMAIL_USERNAME}`,
+        to: email,
+        subject: "Account Verified",
+        // text:`OTP for Your account verification is ${otp}`
+        html: `Your account is successfully <b>verified</b>`
+      }
+      transporter.sendMail(mailOptions, (error, email_res) => {
+        if (error) { errorResponse(res, 'otp verified but Error sending mail', 400, error); }
+        else {
+          // console.log("Email sent to", email_res)
+          return successResponse(res, 'Otp verified', 200, email_res);
         }
-
-
-
-
-    } catch (err) {
-        res.status(500).json({
-            error: "manual error message",
-            errormsg: err.message
-        });
+      })
+    } else {
+      errorResponse(res, 'Otp verification failed', 400, "otp not matches");
     }
+    }
+
+
+
+  } catch (err) {
+    errorResponse(res, 'verify OTP', 500, err);
+  }
 }
 
 module.exports = { sendOTP, verifyOTP }
