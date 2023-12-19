@@ -22,7 +22,7 @@ app.use((req,res,next) =>{
 });
 
 app.get('/',(req,res)=>{
-  res.send("This is backend of TejTech By: TejPratap");
+  res.send("This is backend of TejTech By: TejPratap [up and running]");
 });
 
 
