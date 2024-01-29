@@ -22,7 +22,6 @@ router.route('/getme')
 //EDIT AND DELETE ROUTES
 router.route('/single')
   .patch(authMiddle.protect, userController.uploadImage, userController.editUser)
-  .post(authMiddle.protect, userController.setExpense)
   .delete(authMiddle.protect, userController.deleteUser)
 
 
@@ -36,9 +35,5 @@ router.route('/verifyotp')
 router.route('/sendsms')
   .get(smsController.sendSMS)
 
-//TRANSACTIONS
-router.route('/transactions')
-  .get(authMiddle.protect, userController.getAllTransactions)
-  .post(authMiddle.protect, userController.createTransaction)
 
 module.exports = router;

@@ -10,7 +10,7 @@ const multer = require('multer');
 const getAllUsers = async(req,res)=>{
   try{
     const users = await User.find();
-    successResponse(res,'successfully fetched all users',200,{totat_users:users.length,users});
+    successResponse(res,'successfully fetched all users',200,{totalUsers:users.length,users});
 
   }catch(err){
     errorResponse(res,'getAllUsers',500,err);
@@ -55,6 +55,7 @@ const fileFilter = (req, file, cb) => {
 let upload = multer({storage:fileStorage,fileFilter:fileFilter})
 const uploadImage = upload.single('userphoto'); //sending image with key name as userphoto if we change the key  name to file then we have to 
 //write file instead of userphoto
+
 const imagesUpload = upload.fields([{ name: 'photo', maxCount: 1 }, { name: 'coverphoto', maxCount: 5 }]);
 //uploading single single image with different names
 
@@ -64,9 +65,12 @@ const uploadMultipleImages = upload.array('userphotos',10);
 const signup = async(req,res,err) =>{
   try{
     const {firstName,lastName,email,phone,password,confirmPassword} = req.body;
-    const checkuser = await User.findOne({email});
-    if(checkuser){return errorResponse(res,'user already exists',200,null);};
-    if(password != confirmPassword){return errorResponse(res,'password not matches',200,null);};
+    const checkPhone = await User.findOne({phone});
+    if(checkPhone){return errorResponse(res,"This Phone Number has Been already Registered Please Login",200,{})};
+    const checkEmail = await User.findOne({email});
+    if(checkEmail){return errorResponse(res,"This Email has Been already Registered Please Login",200,{})};
+    
+    if(password != confirmPassword){return errorResponse(res,'password not matches',200,{});};
      const user = new User({
       firstName,
       lastName,
@@ -77,11 +81,13 @@ const signup = async(req,res,err) =>{
     
     });
 
+    //setting user profile photo
     if (req.file) {
       user.photo = req.file.path;
     }
 
     await user.save();
+
     let token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, {
       expiresIn: 86400 // expires in 24 hours
     });
@@ -98,7 +104,7 @@ const loginUser = async(req,res) =>{
     const user = await User.findOne({email:req.body.userid}).select('+password');
     console.log(user);
     if(!user){
-      return errorResponse(res,'user not exist',200,null);
+      return errorResponse(res,'user not exist',200,{});
     }
     else if(user.password == req.body.password){
       let token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, {
@@ -115,9 +121,9 @@ const loginUser = async(req,res) =>{
 
 const getMe = (req,res) =>{
   try{
-    successResponse(res,'user info',200,req.user);
+    successResponse(res,'user fetched successfully',200,req.user);
   }catch (err) {
-    errorResponse(res,'getMe',500,null);
+    errorResponse(res,'getMe',500,err);
   }
 }
 
@@ -146,18 +152,6 @@ const editUser = async(req,res) =>{
   }
 }
 
-const setExpense = async(req,res) =>{
-  try{
-    const {targetExpense} = req.body;
-    let user = await User.findById(req.user._id);
-    user.targetExpense = targetExpense
-    await user.save();
-    successResponse(res,'target expense updated',200,user.targetExpense);
-  }catch (err) {
-    errorResponse(res,'setExpense',500,err);
-  }
-}
-
 
 //admin function
 const deleteUser = async(req,res) =>{
@@ -169,45 +163,14 @@ const deleteUser = async(req,res) =>{
 }
 
 
-//transactions
-const getAllTransactions = async(req,res) =>{
-  try{
-      console.log(req.user);
-      let transactions = await Transaction.find({userId:req.user._id});
-      if(!transactions){return  errorResponse(res,"no transactions found",404,null);}
-      successResponse(res,"all transactions fetched",200,{totalTransactions:transactions.length,transactions})
-  }catch(err){
-      errorResponse(res,"getAllTransactions",500,err);
-  }
-}
-
-const createTransaction = async(req,res) =>{
-  try{
-      const {transferredAmount,typeOfExpense} = req.body;
-      let transaction = new Transaction({
-          userId:req.user._id,
-          transferredAmount,
-          isDebit:true,
-          typeOfExpense
-      })
-      await transaction.save();
-      let user = await User.findById(req.user._id);
-      let amount = parseInt(transferredAmount)+user.totalExpense;
-      await User.updateOne({_id:req.user._id},{
-          totalExpense:amount
-      })
-      successResponse(res,"transaction created",201,transaction)
-  }catch(err){
-      errorResponse(res,"createTransaction",500,err);
-  }
-}
-
-
 module.exports={
   getAllUsers,
-  uploadImage,imagesUpload,uploadMultipleImages,
-  signup,loginUser,getMe,
-  editUser,setExpense,deleteUser,
-  getAllTransactions,
-  createTransaction
+  uploadImage,
+  imagesUpload,
+  uploadMultipleImages,
+  signup,
+  loginUser,
+  getMe,
+  editUser,
+  deleteUser,
 }

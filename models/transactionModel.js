@@ -6,15 +6,11 @@ const transactionSchema = mongoose.Schema({
         ref:'User',
         required:[true,"userId is required"]
     },
-    transferredAmount:{
+    amount:{
         type:Number
     },
     isDebit:Boolean,
-    typeOfExpense:{
-        type:String,
-        enum:['food','fuel','clothes','electronics','rent','emi','others']
-    },
-    lastUpdated:{
+    createdDate:{
         type:Date,
         default:Date.now()
     },

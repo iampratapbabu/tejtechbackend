@@ -50,14 +50,6 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
-  targetExpense:{
-    type:Number,
-    default:0,
-  },
-  totalExpense:{
-    type:Number,
-    default:0
-  },
   createAt:{
     type:Date,
     default:Date.now(),
