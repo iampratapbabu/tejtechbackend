@@ -3,7 +3,9 @@ const mongoose = require('mongoose');
 const earningSchema = mongoose.Schema({
     user:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:"User"
+        ref:"User",
+        required:[true,"user is required"]
+
     },
     amount:{
         type:String,
@@ -11,6 +13,7 @@ const earningSchema = mongoose.Schema({
     },
     earningType:{
         type:String,
+        default:"salary",
     },
     earningDate:{
         type:Date,

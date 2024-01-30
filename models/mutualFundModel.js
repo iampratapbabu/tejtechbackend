@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 const mutualFundSchema = mongoose.Schema({
     user:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:"User"
+        ref:"User",
+        required:[true,"user is required"]
     },
     name:{
         type:String,

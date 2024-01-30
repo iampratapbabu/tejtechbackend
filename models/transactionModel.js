@@ -1,15 +1,19 @@
 const mongoose = require('mongoose');
 
 const transactionSchema = mongoose.Schema({
-    userId:{
+    user:{
         type:mongoose.Schema.ObjectId,
         ref:'User',
-        required:[true,"userId is required"]
+        required:[true,"user is required"]
     },
     amount:{
-        type:Number
+        type:Number,
+        required:[true,"amount is required"]
     },
-    isDebit:Boolean,
+    isDebit:{
+        type:Boolean,
+        default:true,
+    },
     createdDate:{
         type:Date,
         default:Date.now()

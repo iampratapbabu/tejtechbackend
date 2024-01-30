@@ -3,13 +3,17 @@ const mongoose = require('mongoose');
 const personalExpenseSchema = mongoose.Schema({
     user:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:"User"
+        ref:"User",
+        required:[true,"user is required"]
+
     },
     expenseType:{
         type:String,
+        default:null
     },
     remarks:{
         type:String,
+        default:null
     },
     amount:{
         type:Number,

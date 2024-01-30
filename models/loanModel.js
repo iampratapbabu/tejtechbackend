@@ -11,10 +11,12 @@ const loanSchema = mongoose.Schema({
     },
     loanType:{
         type:String,
+        default:"given",
         enum:['taken','given']
     },
     remarks:{
         type:String,
+        default:null
     },
     loanDate:{
         type:Date,

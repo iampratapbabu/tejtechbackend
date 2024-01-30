@@ -3,7 +3,12 @@ const mongoose = require('mongoose');
 const stocksSchema = mongoose.Schema({
     user:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:"User"
+        ref:"User",
+        required:[true,"user is required"]
+    },
+    name:{
+        type:String,
+        required:[true,"name is required"]
     },
     dateOfInvestment:{
         type:Date,
