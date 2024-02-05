@@ -158,7 +158,7 @@ const deleteUser = async(req,res) =>{
   try{
     successResponse(res,'user info',200,req.user);
   }catch (err) {
-    errorResponse(res,'deleteUser',500,null);
+    errorResponse(res,'deleteUser',500,err);
   }
 }
 
