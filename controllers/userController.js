@@ -1,19 +1,26 @@
 const User = require('../models/userModel');
 const Transaction = require('../models/transactionModel');
-const {errorResponse,successResponse} = require('../lib/responseHandler');
+const BankAccount = require('../models/bankAccountModel');
+const Earning = require('../models/earningModel');
+const Loan = require('../models/loanModel');
+const MutualFund = require('../models/mutualFundModel');
+const PersonalExpense = require('../models/personalExpenseModel');
+const Stock = require('../models/stockModel');
+
+const { errorResponse, successResponse } = require('../lib/responseHandler');
 const jwt = require('jsonwebtoken');
-const fs=require('fs');
+const fs = require('fs');
 const multer = require('multer');
 
 
 //authentication
-const getAllUsers = async(req,res)=>{
-  try{
+const getAllUsers = async (req, res) => {
+  try {
     const users = await User.find();
-    successResponse(res,'successfully fetched all users',200,{totalUsers:users.length,users});
+    successResponse(res, 'successfully fetched all users', 200, { totalUsers: users.length, users });
 
-  }catch(err){
-    errorResponse(res,'getAllUsers',500,err);
+  } catch (err) {
+    errorResponse(res, 'getAllUsers', 500, err);
   }
 }
 
@@ -24,7 +31,7 @@ const fileStorage = multer.diskStorage({
     const dir = './uploads/user-img'
     // check if directory exists
     if (!fs.existsSync(dir)) {
-      fs.mkdir("./uploads/user-img", function(err) {
+      fs.mkdir("./uploads/user-img", function (err) {
         if (err) {
           console.log(err)
         } else {
@@ -43,16 +50,16 @@ const fileStorage = multer.diskStorage({
 });
 
 const fileFilter = (req, file, cb) => {
-    const allowedFileTypes = ['image/jpeg', 'image/jpg', 'image/png'];
-    if(allowedFileTypes.includes(file.mimetype)) {
-        cb(null, true);
-    } else {
-        cb(null, false);
-    }
-    //console.log("file filter runs")
+  const allowedFileTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+  if (allowedFileTypes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+  //console.log("file filter runs")
 }
 
-let upload = multer({storage:fileStorage,fileFilter:fileFilter})
+let upload = multer({ storage: fileStorage, fileFilter: fileFilter })
 const uploadImage = upload.single('userphoto'); //sending image with key name as userphoto if we change the key  name to file then we have to 
 //write file instead of userphoto
 
@@ -60,25 +67,25 @@ const imagesUpload = upload.fields([{ name: 'photo', maxCount: 1 }, { name: 'cov
 //uploading single single image with different names
 
 //uploading multiple images in one go
-const uploadMultipleImages = upload.array('userphotos',10);
+const uploadMultipleImages = upload.array('userphotos', 10);
 
-const signup = async(req,res,err) =>{
-  try{
-    const {firstName,lastName,email,phone,password,confirmPassword} = req.body;
-    const checkPhone = await User.findOne({phone});
-    if(checkPhone){return errorResponse(res,"This Phone Number has Been already Registered Please Login",200,{})};
-    const checkEmail = await User.findOne({email});
-    if(checkEmail){return errorResponse(res,"This Email has Been already Registered Please Login",200,{})};
-    
-    if(password != confirmPassword){return errorResponse(res,'password not matches',200,{});};
-     const user = new User({
+const signup = async (req, res, err) => {
+  try {
+    const { firstName, lastName, email, phone, password, confirmPassword } = req.body;
+    const checkPhone = await User.findOne({ phone });
+    if (checkPhone) { return errorResponse(res, "This Phone Number has Been already Registered Please Login", 200, {}) };
+    const checkEmail = await User.findOne({ email });
+    if (checkEmail) { return errorResponse(res, "This Email has Been already Registered Please Login", 200, {}) };
+
+    if (password != confirmPassword) { return errorResponse(res, 'password not matches', 200, {}); };
+    const user = new User({
       firstName,
       lastName,
       email,
       phone,
       password,
       confirmPassword
-    
+
     });
 
     //setting user profile photo
@@ -92,46 +99,46 @@ const signup = async(req,res,err) =>{
       expiresIn: 86400 // expires in 24 hours
     });
 
-    successResponse(res,'user registration successfull',200,{token,user});
+    successResponse(res, 'user registration successfull', 200, { token, user });
 
-  }catch(err){
-    errorResponse(res,'signup',500,err);
+  } catch (err) {
+    errorResponse(res, 'signup', 500, err);
   }
 }
 
-const loginUser = async(req,res) =>{
-  try{
-    const user = await User.findOne({email:req.body.userid}).select('+password');
+const loginUser = async (req, res) => {
+  try {
+    const user = await User.findOne({ email: req.body.userid }).select('+password');
     console.log(user);
-    if(!user){
-      return errorResponse(res,'user not exist',200,{});
+    if (!user) {
+      return errorResponse(res, 'user not exist', 200, {});
     }
-    else if(user.password == req.body.password){
+    else if (user.password == req.body.password) {
       let token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, {
         expiresIn: 86400 // expires in 24 hours
       });
-      successResponse(res,'user loggedin successfully',200,{token,user});
-    }else{
-      errorResponse(res,'invalid credentials',400,"username or password is incorrect");
+      successResponse(res, 'user loggedin successfully', 200, { token, user });
+    } else {
+      errorResponse(res, 'invalid credentials', 400, "username or password is incorrect");
     }
-  }catch(err){
-    errorResponse(res,'loginUser',500,err);
+  } catch (err) {
+    errorResponse(res, 'loginUser', 500, err);
   }
 }
 
-const getMe = (req,res) =>{
-  try{
-    successResponse(res,'user fetched successfully',200,req.user);
-  }catch (err) {
-    errorResponse(res,'getMe',500,err);
+const getMe = (req, res) => {
+  try {
+    successResponse(res, 'user fetched successfully', 200, req.user);
+  } catch (err) {
+    errorResponse(res, 'getMe', 500, err);
   }
 }
 
 //updation and deletion
-const editUser = async(req,res) =>{
-  try{
+const editUser = async (req, res) => {
+  try {
     console.log(req.file);
-    const {firstName,lastName,email,phone,gender,countryCode} = req.body;
+    const { firstName, lastName, email, phone, gender, countryCode } = req.body;
     let user = await User.findById(req.user._id);
     user.firstName = firstName || req.user.firstName;
     user.lastName = lastName || req.user.lastName;
@@ -142,28 +149,90 @@ const editUser = async(req,res) =>{
 
     if (req.file) {
       user.photo = req.file.path;
-      console.log("photo updated of",user.firstName);
+      console.log("photo updated of", user.firstName);
     }
 
     await user.save();
-    successResponse(res,'user info updated',200,user);
-  }catch (err) {
-    errorResponse(res,'editUser',500,err);
+    successResponse(res, 'user info updated', 200, user);
+  } catch (err) {
+    errorResponse(res, 'editUser', 500, err);
   }
 }
 
 
 //admin function
-const deleteUser = async(req,res) =>{
-  try{
-    successResponse(res,'user info',200,req.user);
-  }catch (err) {
-    errorResponse(res,'deleteUser',500,err);
+const deleteUser = async (req, res) => {
+  try {
+    successResponse(res, 'user info', 200, req.user);
+  } catch (err) {
+    errorResponse(res, 'deleteUser', 500, err);
+  }
+}
+
+//functionalities
+const createPortfolio = async (req, res) => {
+  try {
+    const { mutualFunds, stocks, bankAccounts, earnings, expenses, loans } = req.body;
+    let userBankAccount,userMutualFund,userStock,userEarning,userExpense,userLoan;
+    //saving bank accounts
+    if (bankAccounts.length > 0) {
+      for (let singleAccount of bankAccounts) {
+        userBankAccount = await BankAccount.create({ ...singleAccount, user: req.user._id });
+      }
+    }
+
+    //saving bank accounts
+    if (mutualFunds.length > 0) {
+      for (let singlemf of mutualFunds) {
+        userMutualFund = await MutualFund.create({ ...singlemf, user: req.user._id });
+      }
+    }
+
+    //saving bank accounts
+    if (stocks.length > 0) {
+      for (let singleStock of stocks) {
+        userStock = await Stock.create({ ...singleStock, user: req.user._id });
+      }
+    }
+
+    //saving bank accounts
+    if (earnings.length > 0) {
+      for (let singleEarning of earnings) {
+        userEarning = await Earning.create({ ...singleEarning, user: req.user._id });
+      }
+    }
+
+    //saving bank accounts
+    if (expenses.length > 0) {
+      for (let singleExpense of expenses) {
+        userExpense = await Loan.create({ ...singleExpense, user: req.user._id });
+      }
+    }
+
+    //saving bank accounts
+    if (loans.length > 0) {
+      for (let singleLoan of loans) {
+        userLoan = await Loan.create({ ...singleLoan, user: req.user._id });
+      }
+    }
+
+    return successResponse(res, 'portfolio creation successfull', 200, {
+      bankAccounts:userBankAccount,
+      mutualFunds:userMutualFund,
+      stocks:userStock,
+      earnings:userEarning,
+      expense:userExpense,
+      loan:userLoan
+    });
+
+
+  } catch (err) {
+    errorResponse(res, 'deleteUser', 500, err);
   }
 }
 
 
-module.exports={
+module.exports = {
   getAllUsers,
   uploadImage,
   imagesUpload,
@@ -173,4 +242,5 @@ module.exports={
   getMe,
   editUser,
   deleteUser,
+  createPortfolio,
 }

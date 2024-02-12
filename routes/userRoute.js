@@ -25,6 +25,13 @@ router.route('/single')
   .delete(authMiddle.protect, userController.deleteUser)
 
 
+//portfolio
+router.route('/portfolio')
+.post(authMiddle.protect,userController.createPortfolio);
+
+
+
+
 //UTILS ROUTES
 router.route('/sendotp')
   .post(emailController.sendOTP)

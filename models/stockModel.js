@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const stocksSchema = mongoose.Schema({
+const stockSchema = mongoose.Schema({
     user:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"User",
@@ -10,13 +10,13 @@ const stocksSchema = mongoose.Schema({
         type:String,
         required:[true,"name is required"]
     },
-    dateOfInvestment:{
-        type:Date,
-        default:Date.now()
-    },
     amount:{
         type:Number,
         required:[true,"amount Invested is required"]
+    },
+    dateOfInvestment:{
+        type:Date,
+        default:Date.now()
     },
     createdAt:{
         type:Date,
@@ -25,4 +25,4 @@ const stocksSchema = mongoose.Schema({
 
 });
 
-module.exports = mongoose.model('Stocks',stocksSchema);
+module.exports = mongoose.model('Stock',stockSchema);
