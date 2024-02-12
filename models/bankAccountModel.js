@@ -10,7 +10,7 @@ const bankAccountSchema = mongoose.Schema({
         type:String,
         required:[true,"bank name is required"]   
     },
-    accountHolderNamer:{
+    accountHolderName:{
         type:String,
         required:[true,"account holder name is required"]   
     },
@@ -25,7 +25,7 @@ const bankAccountSchema = mongoose.Schema({
     },
     currentBalance:{
         type:Number,
-        required:[true,"ifsc code is required"]
+        default:0
     },
     createdAt:{
         type:Date,

@@ -174,6 +174,7 @@ const createPortfolio = async (req, res) => {
   try {
     const { mutualFunds, stocks, bankAccounts, earnings, expenses, loans } = req.body;
     let userBankAccount,userMutualFund,userStock,userEarning,userExpense,userLoan;
+
     //saving bank accounts
     if (bankAccounts.length > 0) {
       for (let singleAccount of bankAccounts) {
@@ -181,53 +182,45 @@ const createPortfolio = async (req, res) => {
       }
     }
 
-    //saving bank accounts
+    //saving mfs
     if (mutualFunds.length > 0) {
       for (let singlemf of mutualFunds) {
         userMutualFund = await MutualFund.create({ ...singlemf, user: req.user._id });
       }
     }
 
-    //saving bank accounts
+    //saving stocks
     if (stocks.length > 0) {
       for (let singleStock of stocks) {
         userStock = await Stock.create({ ...singleStock, user: req.user._id });
       }
     }
 
-    //saving bank accounts
+    //saving earnings
     if (earnings.length > 0) {
       for (let singleEarning of earnings) {
         userEarning = await Earning.create({ ...singleEarning, user: req.user._id });
       }
     }
 
-    //saving bank accounts
+    //saving expenses
     if (expenses.length > 0) {
       for (let singleExpense of expenses) {
         userExpense = await Loan.create({ ...singleExpense, user: req.user._id });
       }
     }
 
-    //saving bank accounts
+    //saving loans
     if (loans.length > 0) {
       for (let singleLoan of loans) {
         userLoan = await Loan.create({ ...singleLoan, user: req.user._id });
       }
     }
 
-    return successResponse(res, 'portfolio creation successfull', 200, {
-      bankAccounts:userBankAccount,
-      mutualFunds:userMutualFund,
-      stocks:userStock,
-      earnings:userEarning,
-      expense:userExpense,
-      loan:userLoan
-    });
-
+    return successResponse(res, 'portfolio creation successfull', 200, {});
 
   } catch (err) {
-    errorResponse(res, 'deleteUser', 500, err);
+    errorResponse(res, 'createPortfolio', 500, err);
   }
 }
 
