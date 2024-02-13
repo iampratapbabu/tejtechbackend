@@ -176,42 +176,42 @@ const createPortfolio = async (req, res) => {
     let userBankAccount,userMutualFund,userStock,userEarning,userExpense,userLoan;
 
     //saving bank accounts
-    if (bankAccounts.length > 0) {
+    if (bankAccounts && bankAccounts.length > 0) {
       for (let singleAccount of bankAccounts) {
         userBankAccount = await BankAccount.create({ ...singleAccount, user: req.user._id });
       }
     }
 
     //saving mfs
-    if (mutualFunds.length > 0) {
+    if (mutualFunds && mutualFunds.length > 0) {
       for (let singlemf of mutualFunds) {
         userMutualFund = await MutualFund.create({ ...singlemf, user: req.user._id });
       }
     }
 
     //saving stocks
-    if (stocks.length > 0) {
+    if (stocks && stocks.length > 0) {
       for (let singleStock of stocks) {
         userStock = await Stock.create({ ...singleStock, user: req.user._id });
       }
     }
 
     //saving earnings
-    if (earnings.length > 0) {
+    if (earnings && earnings.length > 0) {
       for (let singleEarning of earnings) {
         userEarning = await Earning.create({ ...singleEarning, user: req.user._id });
       }
     }
 
     //saving expenses
-    if (expenses.length > 0) {
+    if (expenses && expenses.length > 0) {
       for (let singleExpense of expenses) {
         userExpense = await Loan.create({ ...singleExpense, user: req.user._id });
       }
     }
 
     //saving loans
-    if (loans.length > 0) {
+    if (loans && loans.length > 0) {
       for (let singleLoan of loans) {
         userLoan = await Loan.create({ ...singleLoan, user: req.user._id });
       }
@@ -221,6 +221,33 @@ const createPortfolio = async (req, res) => {
 
   } catch (err) {
     errorResponse(res, 'createPortfolio', 500, err);
+  }
+}
+
+const getuserPortfolio = async(req,res) =>{
+  try{
+    const {portfolioType} = req.body;
+    let responseBody = {};
+    //summary, mutualFunds,stocks,bankAccounts,earnings,expenses,loans
+    if(portfolioType === "summary"){
+
+    }
+
+
+  }catch(err){
+    errorResponse(res, 'getSinglePortfolio', 500, err);
+
+  }
+}
+
+
+const editPortfolio = async(req,res) =>{
+  try{
+    const {portfolioId} = req.body;
+
+  }catch(err){
+    errorResponse(res, 'getSinglePortfolio', 500, err);
+
   }
 }
 
@@ -236,4 +263,6 @@ module.exports = {
   editUser,
   deleteUser,
   createPortfolio,
+  getuserPortfolio,
+  editPortfolio,
 }
