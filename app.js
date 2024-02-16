@@ -1,6 +1,5 @@
 const express = require("express");
 const morgan = require('morgan');
-const adminRouter = require("./routes/adminRoute");
 const userRouter = require("./routes/userRoute");
 const portfolioRouter = require("./routes/portfolioRoute");
 
@@ -29,7 +28,6 @@ app.get('/',(req,res)=>{
 
 
 //routing middlewares
-app.use('/api/admin',adminRouter);
 app.use('/api/users',userRouter);
 app.use('/api/portfolio',portfolioRouter);
 
