@@ -14,6 +14,11 @@ const mutualFundSchema = mongoose.Schema({
         type:Number,
         required:[true,"amount Invested is required"]
     },
+    investmentType:{
+        type:String,
+        default:null,
+        enum:['sip','lumpsump']
+    },
     dateOfInvestment:{
         type:Date,
         default:Date.now()
