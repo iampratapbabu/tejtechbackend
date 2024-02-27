@@ -6,7 +6,7 @@ const loanSchema = mongoose.Schema({
         ref:"User"
     },
     amount:{
-        type:String,
+        type:Number,
         required:[true,"amount is required"]   
     },
     loanType:{

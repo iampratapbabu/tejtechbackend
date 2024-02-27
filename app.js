@@ -23,13 +23,21 @@ app.use((req,res,next) =>{
 });
 
 app.get('/',(req,res)=>{
-  res.send("This is backend of TejTech By: TejPratap [RUNNING]");
+  res.send("TejTech Server STATUS:[UP]");
 });
 
 
 //routing middlewares
 app.use('/api/users',userRouter);
 app.use('/api/portfolio',portfolioRouter);
+
+
+//no route handling
+app.use('*',(req,res)=>{
+	res.status(404).json({
+		message:"No Routes Defined at this Path"
+	})
+})
 
 
 

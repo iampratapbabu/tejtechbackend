@@ -1,12 +1,4 @@
 const User = require('../models/userModel');
-const Transaction = require('../models/transactionModel');
-const BankAccount = require('../models/bankAccountModel');
-const Earning = require('../models/earningModel');
-const Loan = require('../models/loanModel');
-const MutualFund = require('../models/mutualFundModel');
-const PersonalExpense = require('../models/personalExpenseModel');
-const Stock = require('../models/stockModel');
-
 const { errorResponse, successResponse } = require('../lib/responseHandler');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');

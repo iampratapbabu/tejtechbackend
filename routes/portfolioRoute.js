@@ -5,6 +5,7 @@ const portfolioController = require('../controllers/portfolioController')
 const router = express.Router();
 
 router.route('/')
+.get(authMiddle.protect,portfolioController.getPortfolioSummary)
 .post(authMiddle.protect,portfolioController.createPortfolio);
 
 router.route('/user-portfolio')
@@ -12,6 +13,8 @@ router.route('/user-portfolio')
 
 router.route('/edit-portfolio')
 .patch(authMiddle.protect,portfolioController.editPortfolio);
+
+
 
 
 module.exports = router;
