@@ -69,7 +69,7 @@ const signup = async (req, res, err) => {
     const checkEmail = await User.findOne({ email });
     if (checkEmail) { return errorResponse(res, "This Email has Been already Registered Please Login", 200, {}) };
 
-    if (password != confirmPassword) { return errorResponse(res, 'password not matches', 200, {}); };
+    if (password != confirmPassword) { return errorResponse(res, 'password not matches', 400, {}); };
     const user = new User({
       firstName,
       lastName,
@@ -103,7 +103,7 @@ const loginUser = async (req, res) => {
     const user = await User.findOne({ email: req.body.userid }).select('+password');
     console.log(user);
     if (!user) {
-      return errorResponse(res, 'user not exist', 200, {});
+      return errorResponse(res, 'user not exist', 400, {});
     }
     else if (user.password == req.body.password) {
       let token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, {

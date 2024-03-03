@@ -114,29 +114,29 @@ const getuserPortfolio = async (req, res) => {
       
         if (req.body.portfolioType === "mutualFunds") {
             let userMutualFunds = await MutualFund.find({user:req.user._id});
-            return successResponse(res, 'mutualFunds portfolio fetched', 200, userMutualFunds);
+            return successResponse(res, 'mutualFunds portfolio fetched', 200, {portfolioType:"mutualFunds",userMutualFunds});
         }
 
         if (req.body.portfolioType === "stocks") {
             let userStocks = await Stock.find({user:req.user._id});
-            return successResponse(res, 'stocks fetched', 200, userStocks);
+            return successResponse(res, 'stocks fetched', 200, {portfolioType:"stocks",userStocks});
 
         }
 
         if (req.body.portfolioType === "bankAccounts") {
             let userBankAccounts = await BankAccount.find({user:req.user._id});
-            return successResponse(res, 'bank accounts fetched', 200, userBankAccounts);
+            return successResponse(res, 'bank accounts fetched', 200, {portfolioType:"bankAccounts",userBankAccounts});
         }
 
         if (req.body.portfolioType === "expenses") {
             let userExpenses = await PersonalExpense.find({user:req.user._id});
-            return successResponse(res, 'expense fetched', 200, userExpenses);
+            return successResponse(res, 'expense fetched', 200, {portfolioType:"expenses",userExpenses});
 
         }
 
         if (req.body.portfolioType === "loans") {
             let userLoans = await Loan.find({user:req.user._id});
-            return successResponse(res, 'Loan Portfolio fetched', 200, userLoans);
+            return successResponse(res, 'Loan Portfolio fetched', 200, {portfolioType:"loans",userLoans});
 
         }
 
