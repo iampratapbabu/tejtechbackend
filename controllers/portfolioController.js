@@ -14,8 +14,8 @@ const getPortfolioSummary = async(req,res) =>{
             "netWorth":0,
             "totalAssets":0,
             "totalLiablites":0,
-            "assets":[],
-            "liablities":[],
+            // "assets":[],
+            // "liablities":[],
         }
 
         let userMutualFunds = await MutualFund.find({user:req.user._id});
@@ -48,8 +48,8 @@ const getPortfolioSummary = async(req,res) =>{
         }
 
         userPortfolioSummary.totalAssets = totalMf + totalBankBalance + totalStocks;
-        userPortfolioSummary.totalLiablites = totalExpense + totalLoans;
-        userPortfolioSummary.netWorth = (totalMf + totalBankBalance + totalStocks) - (totalExpense + totalLoans);
+        userPortfolioSummary.totalLiablites =  totalLoans;
+        userPortfolioSummary.netWorth = (totalMf + totalBankBalance + totalStocks) - (totalLoans);
 
 
         return successResponse(res, 'Portfolio summary fetched', 200, userPortfolioSummary);
@@ -91,7 +91,7 @@ const createPortfolio = async (req, res) => {
         //saving expenses
         if (expenses && expenses.length > 0) {
             for (let singleExpense of expenses) {
-                userExpense = await Loan.create({ ...singleExpense, user: req.user._id });
+                userExpense = await PersonalExpense.create({ ...singleExpense, user: req.user._id });
             }
         }
 
@@ -106,6 +106,31 @@ const createPortfolio = async (req, res) => {
 
     } catch (err) {
         errorResponse(res, 'createPortfolio', 500, err);
+    }
+}
+
+const getExpenseSummary = async(req,res) =>{
+    try{
+        let userExpense = {
+            "expenseAmount":0,
+            // "assets":[],
+            // "liablities":[],
+        }
+
+        let userExpenses = await PersonalExpense.find({user:req.user._id});
+        let totalExpense = 0;
+
+        for(let expense of userExpenses){
+            totalExpense += expense?.amount;
+        }
+
+        userExpense.expenseAmount = totalExpense
+
+        return successResponse(res, 'Portfolio summary fetched', 200, userExpense);
+
+    }catch(err){
+        errorResponse(res, 'getSinglePortfolio', 500, err);
+
     }
 }
 
@@ -197,6 +222,7 @@ const editPortfolio = async (req, res) => {
 module.exports = {
     createPortfolio,
     getuserPortfolio,
+    getExpenseSummary,
     editPortfolio,
     getPortfolioSummary,
 }

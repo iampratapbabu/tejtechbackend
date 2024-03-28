@@ -8,6 +8,9 @@ router.route('/')
 .get(authMiddle.protect,portfolioController.getPortfolioSummary)
 .post(authMiddle.protect,portfolioController.createPortfolio);
 
+router.route('/expense')
+.get(authMiddle.protect,portfolioController.getExpenseSummary)
+
 router.route('/user-portfolio')
 .post(authMiddle.protect,portfolioController.getuserPortfolio);
 

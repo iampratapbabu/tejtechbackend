@@ -2,10 +2,16 @@ const express = require("express");
 const morgan = require('morgan');
 const userRouter = require("./routes/userRoute");
 const portfolioRouter = require("./routes/portfolioRoute");
+const serviceRoute = require("./routes/serviceRoute");
+
+const cronService = require('./scripts/cronService');
 
 
 const app=express();
 app.use(express.json());
+
+//running custom scripts or cron
+cronService.main();
 
 //dev middleware
 if(process.env.NODE_ENV="development"){
@@ -30,6 +36,8 @@ app.get('/',(req,res)=>{
 //routing middlewares
 app.use('/api/users',userRouter);
 app.use('/api/portfolio',portfolioRouter);
+app.use('/api/service',serviceRoute);
+
 
 
 //no route handling

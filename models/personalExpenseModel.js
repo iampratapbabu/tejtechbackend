@@ -17,7 +17,7 @@ const personalExpenseSchema = mongoose.Schema({
     },
     amount:{
         type:Number,
-        required:[true,"amount Invested is required"]
+        required:[true,"spent amount is required"]
     },
     createdAt:{
         type:Date,

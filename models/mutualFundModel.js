@@ -19,6 +19,10 @@ const mutualFundSchema = mongoose.Schema({
         default:null,
         enum:['sip','lumpsump']
     },
+    dateOfSip:{
+        type:Date,
+        default:Date.now()
+    },
     dateOfInvestment:{
         type:Date,
         default:Date.now()
