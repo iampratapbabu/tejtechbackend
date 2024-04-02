@@ -6,55 +6,56 @@ const MutualFund = require('../models/mutualFundModel');
 const PersonalExpense = require('../models/personalExpenseModel');
 const Stock = require('../models/stockModel');
 const { errorResponse, successResponse } = require('../lib/responseHandler');
+const axios = require("axios");
 
 
-const getPortfolioSummary = async(req,res) =>{
-    try{
+const getPortfolioSummary = async (req, res) => {
+    try {
         let userPortfolioSummary = {
-            "netWorth":0,
-            "totalAssets":0,
-            "totalLiablites":0,
+            "netWorth": 0,
+            "totalAssets": 0,
+            "totalLiablites": 0,
             // "assets":[],
             // "liablities":[],
         }
 
-        let userMutualFunds = await MutualFund.find({user:req.user._id});
-        let userStocks = await Stock.find({user:req.user._id});
-        let userBankAccounts = await BankAccount.find({user:req.user._id});
-        let userExpenses = await PersonalExpense.find({user:req.user._id});
-        let userLoans = await Loan.find({user:req.user._id});
+        let userMutualFunds = await MutualFund.find({ user: req.user._id });
+        let userStocks = await Stock.find({ user: req.user._id });
+        let userBankAccounts = await BankAccount.find({ user: req.user._id });
+        let userExpenses = await PersonalExpense.find({ user: req.user._id });
+        let userLoans = await Loan.find({ user: req.user._id });
 
-        let totalMf=0,totalStocks = 0,totalBankBalance = 0,totalExpense = 0,totalLoans = 0;
+        let totalMf = 0, totalStocks = 0, totalBankBalance = 0, totalExpense = 0, totalLoans = 0;
 
         //calculating assests
-        for(let mutualFund of userMutualFunds){
+        for (let mutualFund of userMutualFunds) {
             totalMf += mutualFund?.amount;
         }
 
-        for(let stock of userStocks){
+        for (let stock of userStocks) {
             totalStocks += stock?.amount;
         }
 
-        for(let bankAccount of userBankAccounts){
+        for (let bankAccount of userBankAccounts) {
             totalBankBalance += bankAccount?.currentBalance;
         }
 
-        for(let expense of userExpenses){
+        for (let expense of userExpenses) {
             totalExpense += expense?.amount;
         }
 
-        for(let loan of userLoans){
+        for (let loan of userLoans) {
             totalLoans += loan?.amount;
         }
 
         userPortfolioSummary.totalAssets = totalMf + totalBankBalance + totalStocks;
-        userPortfolioSummary.totalLiablites =  totalLoans;
+        userPortfolioSummary.totalLiablites = totalLoans;
         userPortfolioSummary.netWorth = (totalMf + totalBankBalance + totalStocks) - (totalLoans);
 
 
         return successResponse(res, 'Portfolio summary fetched', 200, userPortfolioSummary);
 
-    }catch(err){
+    } catch (err) {
         errorResponse(res, 'getSinglePortfolio', 500, err);
 
     }
@@ -109,18 +110,18 @@ const createPortfolio = async (req, res) => {
     }
 }
 
-const getExpenseSummary = async(req,res) =>{
-    try{
+const getExpenseSummary = async (req, res) => {
+    try {
         let userExpense = {
-            "expenseAmount":0,
+            "expenseAmount": 0,
             // "assets":[],
             // "liablities":[],
         }
 
-        let userExpenses = await PersonalExpense.find({user:req.user._id});
+        let userExpenses = await PersonalExpense.find({ user: req.user._id });
         let totalExpense = 0;
 
-        for(let expense of userExpenses){
+        for (let expense of userExpenses) {
             totalExpense += expense?.amount;
         }
 
@@ -128,7 +129,7 @@ const getExpenseSummary = async(req,res) =>{
 
         return successResponse(res, 'Portfolio summary fetched', 200, userExpense);
 
-    }catch(err){
+    } catch (err) {
         errorResponse(res, 'getSinglePortfolio', 500, err);
 
     }
@@ -136,32 +137,32 @@ const getExpenseSummary = async(req,res) =>{
 
 const getuserPortfolio = async (req, res) => {
     try {
-      
+
         if (req.body.portfolioType === "mutualFunds") {
-            let userMutualFunds = await MutualFund.find({user:req.user._id});
-            return successResponse(res, 'mutualFunds portfolio fetched', 200, {portfolioType:"mutualFunds",userMutualFunds});
+            let userMutualFunds = await MutualFund.find({ user: req.user._id });
+            return successResponse(res, 'mutualFunds portfolio fetched', 200, { portfolioType: "mutualFunds", userMutualFunds });
         }
 
         if (req.body.portfolioType === "stocks") {
-            let userStocks = await Stock.find({user:req.user._id});
-            return successResponse(res, 'stocks fetched', 200, {portfolioType:"stocks",userStocks});
+            let userStocks = await Stock.find({ user: req.user._id });
+            return successResponse(res, 'stocks fetched', 200, { portfolioType: "stocks", userStocks });
 
         }
 
         if (req.body.portfolioType === "bankAccounts") {
-            let userBankAccounts = await BankAccount.find({user:req.user._id});
-            return successResponse(res, 'bank accounts fetched', 200, {portfolioType:"bankAccounts",userBankAccounts});
+            let userBankAccounts = await BankAccount.find({ user: req.user._id });
+            return successResponse(res, 'bank accounts fetched', 200, { portfolioType: "bankAccounts", userBankAccounts });
         }
 
         if (req.body.portfolioType === "expenses") {
-            let userExpenses = await PersonalExpense.find({user:req.user._id});
-            return successResponse(res, 'expense fetched', 200, {portfolioType:"expenses",userExpenses});
+            let userExpenses = await PersonalExpense.find({ user: req.user._id });
+            return successResponse(res, 'expense fetched', 200, { portfolioType: "expenses", userExpenses });
 
         }
 
         if (req.body.portfolioType === "loans") {
-            let userLoans = await Loan.find({user:req.user._id});
-            return successResponse(res, 'Loan Portfolio fetched', 200, {portfolioType:"loans",userLoans});
+            let userLoans = await Loan.find({ user: req.user._id });
+            return successResponse(res, 'Loan Portfolio fetched', 200, { portfolioType: "loans", userLoans });
 
         }
 
@@ -175,42 +176,219 @@ const getuserPortfolio = async (req, res) => {
 
 const editPortfolio = async (req, res) => {
     try {
-        const {mutualFunds,stoks,bankAccounts,expenses,loans} = req.body
-        const filter = {_id:req.body.portfolioId,user:req.user._id};
+        const { mutualFunds, stoks, bankAccounts, expenses, loans } = req.body
+        const filter = { _id: req.body.portfolioId, user: req.user._id };
 
         if (req.body.portfolioType === "mutualFunds") {
-            let updatedMutualFunds = await MutualFund.findOneAndUpdate(filter,mutualFunds,{new:true});
-            if(!updatedMutualFunds) return errorResponse(res, 'Mutual fund Not found', 400, {});
+            let updatedMutualFunds = await MutualFund.findOneAndUpdate(filter, mutualFunds, { new: true });
+            if (!updatedMutualFunds) return errorResponse(res, 'Mutual fund Not found', 400, {});
             return successResponse(res, 'mutualFunds portfolio updated successfully', 200, updatedMutualFunds);
         }
 
         if (req.body.portfolioType === "stocks") {
-            let updatedStocks = await Stock.findOneAndUpdate(filter,stoks,{new:true});
-            if(!updatedStocks) return errorResponse(res, 'Stock Not found', 400, {});
+            let updatedStocks = await Stock.findOneAndUpdate(filter, stoks, { new: true });
+            if (!updatedStocks) return errorResponse(res, 'Stock Not found', 400, {});
             return successResponse(res, 'mutualFunds portfolio updated successfully', 200, updatedStocks);
         }
 
         if (req.body.portfolioType === "bankAccounts") {
-            let updatedBankAccounts = await BankAccount.findOneAndUpdate(filter,bankAccounts,{new:true});
-            if(!updatedBankAccounts) return errorResponse(res, 'Bank Account Not found', 400, {});
+            let updatedBankAccounts = await BankAccount.findOneAndUpdate(filter, bankAccounts, { new: true });
+            if (!updatedBankAccounts) return errorResponse(res, 'Bank Account Not found', 400, {});
             return successResponse(res, 'Bank Account portfolio updated successfully', 200, updatedBankAccounts);
         }
 
         if (req.body.portfolioType === "expenses") {
-            let updatedExpenses = await PersonalExpense.findOneAndUpdate(filter,expenses,{new:true});
-            if(!updatedExpenses) return errorResponse(res, 'Expense Not found', 400, {});
+            let updatedExpenses = await PersonalExpense.findOneAndUpdate(filter, expenses, { new: true });
+            if (!updatedExpenses) return errorResponse(res, 'Expense Not found', 400, {});
             return successResponse(res, 'Expense portfolio updated successfully', 200, updatedExpenses);
 
         }
 
         if (req.body.portfolioType === "loans") {
-            let updatedLoans = await Loan.findOneAndUpdate(filter,loans,{new:true});
-            if(!updatedLoans) return errorResponse(res, 'Loan Not found', 400, {});
+            let updatedLoans = await Loan.findOneAndUpdate(filter, loans, { new: true });
+            if (!updatedLoans) return errorResponse(res, 'Loan Not found', 400, {});
             return successResponse(res, 'Loan portfolio updated successfully', 200, updatedLoans);
 
         }
 
         return successResponse(res, 'portfolio type not found', 200, {});
+
+    } catch (err) {
+        errorResponse(res, 'getSinglePortfolio', 500, err);
+
+    }
+}
+
+//mfservice
+
+const mfPortfolio = async (req, res) => {
+    try {
+        let successObject = {
+            totalMf: 0,
+            sip: 0,
+            totalAmount: 0,
+            investedAmount: 0,
+            returnAmount: 0,
+
+        }
+
+        const mf = await MutualFund.find({ user: req.user._id });
+
+        let userId = req.user.id;
+
+        const mfDetail = await MutualFund.aggregate(
+            [
+                {
+                    $match: { user: req.user._id }
+                },
+                {
+                    $group: {
+                        _id: { user: "$user" },
+                        totalAmount: { $sum: "$amount" },
+                        totalMf: { $sum: 1 },
+                        // totalSip: {
+                        //     $sum: {
+                        //       $cond: [{ $in: ["$investmentType", "sip"] }, 1, 0]
+                        //     }
+                        // },
+                        // totalLumpsump: {
+                        //     $sum: {
+                        //       $cond: [{ $in: ["$investmentType", "lumpsump"] }, 1, 0]
+                        //     }
+                        // }
+                    }
+                }
+            ]
+        )
+
+        return successResponse(res, 'MF summary fetched', 200, mfDetail);
+
+    } catch (err) {
+        errorResponse(res, 'getSinglePortfolio', 500, err);
+
+    }
+}
+
+const mfDiversification = async (req, res) => {
+    try {
+        let userExpense = {
+            "expenseAmount": 0,
+            // "assets":[],
+            // "liablities":[],
+        }
+
+        let userExpenses = await PersonalExpense.find({ user: req.user._id });
+        let totalExpense = 0;
+
+        for (let expense of userExpenses) {
+            totalExpense += expense?.amount;
+        }
+
+        userExpense.expenseAmount = totalExpense
+
+        return successResponse(res, 'Portfolio summary fetched', 200, userExpense);
+
+    } catch (err) {
+        errorResponse(res, 'getSinglePortfolio', 500, err);
+
+    }
+}
+
+const mfCalculation = async (req, res) => {
+    try {
+        let userExpense = {
+            "expenseAmount": 0,
+            // "assets":[],
+            // "liablities":[],
+        }
+
+        let userExpenses = await PersonalExpense.find({ user: req.user._id });
+        let totalExpense = 0;
+
+        for (let expense of userExpenses) {
+            totalExpense += expense?.amount;
+        }
+
+        userExpense.expenseAmount = totalExpense
+
+        return successResponse(res, 'Portfolio summary fetched', 200, userExpense);
+
+    } catch (err) {
+        errorResponse(res, 'getSinglePortfolio', 500, err);
+
+    }
+}
+
+const mfSuggest = async (req, res) => {
+    try {
+
+        const options = {
+            method: 'GET',
+            url: 'https://top-performing-mutual-funds.p.rapidapi.com/feed_mf_promotion.cms',
+            params: { feedtype: 'json' },
+            headers: {
+                'X-RapidAPI-Key': '180602f77bmshd0d349914134215p1d51fdjsnb37e99f4cbac',
+                'X-RapidAPI-Host': 'top-performing-mutual-funds.p.rapidapi.com'
+            }
+        };
+
+        const response = await axios.request(options);
+        //console.log(response.data);
+
+        return successResponse(res, 'mutual fund suggestions fetched', 200, response.data);
+
+    } catch (err) {
+        errorResponse(res, 'getSinglePortfolio', 500, err);
+
+    }
+}
+
+
+//stocks service
+const stocksPortfolio = async (req, res) => {
+    try {
+
+        const stocksDetail = await Stock.aggregate(
+            [
+                {
+                    $match: { user: req.user._id }
+                },
+                {
+                    $group: {
+                        _id: { user: "$user" },
+                        totalAmount: { $sum: "$amount" },
+                        totalStocks: { $sum: 1 },
+                    }
+                }
+            ]
+        )
+
+        return successResponse(res, 'Stocks summary fetched', 200, stocksDetail);
+
+    } catch (err) {
+        errorResponse(res, 'getSinglePortfolio', 500, err);
+
+    }
+}
+
+const stocksSuggest = async (req, res) => {
+    try {
+        let userExpense = {
+            "expenseAmount": 0,
+            // "assets":[],
+            // "liablities":[],
+        }
+
+        let userExpenses = await PersonalExpense.find({ user: req.user._id });
+        let totalExpense = 0;
+
+        for (let expense of userExpenses) {
+            totalExpense += expense?.amount;
+        }
+
+        userExpense.expenseAmount = totalExpense
+
+        return successResponse(res, 'Portfolio summary fetched', 200, userExpense);
 
     } catch (err) {
         errorResponse(res, 'getSinglePortfolio', 500, err);
@@ -225,4 +403,12 @@ module.exports = {
     getExpenseSummary,
     editPortfolio,
     getPortfolioSummary,
+
+    mfPortfolio,
+    mfDiversification,
+    mfCalculation,
+    mfSuggest,
+
+    stocksPortfolio,
+    stocksSuggest,
 }
