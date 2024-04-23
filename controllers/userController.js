@@ -3,6 +3,8 @@ const { errorResponse, successResponse } = require('../lib/responseHandler');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const multer = require('multer');
+const bcrypt = require('bcrypt');
+
 
 
 //authentication
@@ -63,20 +65,20 @@ const uploadMultipleImages = upload.array('userphotos', 10);
 
 const signup = async (req, res, err) => {
   try {
-    const { firstName, lastName, email, phone, password, confirmPassword } = req.body;
+    let { firstName, lastName, email, phone, password, confirmPassword } = req.body;
     const checkPhone = await User.findOne({ phone });
     if (checkPhone) { return errorResponse(res, "This Phone Number has Been already Registered Please Login", 200, {}) };
     const checkEmail = await User.findOne({ email });
     if (checkEmail) { return errorResponse(res, "This Email has Been already Registered Please Login", 200, {}) };
 
     if (password != confirmPassword) { return errorResponse(res, 'password not matches', 400, {}); };
+    password = await  bcrypt.hash(password,12);
     const user = new User({
       firstName,
       lastName,
       email,
       phone,
       password,
-      confirmPassword
 
     });
 
@@ -105,7 +107,7 @@ const loginUser = async (req, res) => {
     if (!user) {
       return errorResponse(res, 'user not exist', 400, {});
     }
-    else if (user.password == req.body.password) {
+    else if (await bcrypt.compare(req.body.password,user.password)) {
       let token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, {
         expiresIn: 86400 // expires in 24 hours
       });
