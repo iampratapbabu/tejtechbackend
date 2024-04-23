@@ -69,41 +69,31 @@ const createPortfolio = async (req, res) => {
         let resBody = {};
 
         //saving bank accounts
-        if (bankAccounts && bankAccounts.length > 0) {
-            for (let singleAccount of bankAccounts) {
-                userBankAccount = await BankAccount.create({ ...singleAccount, user: req.user._id });
-            }
+        if (bankAccounts) {
+            userBankAccount = await BankAccount.create({ ...bankAccounts, user: req.user._id });
         }
 
         //saving mfs
-        if (mutualFunds && mutualFunds.length > 0) {
-            for (let singlemf of mutualFunds) {
-                userMutualFund = await MutualFund.create({ ...singlemf, user: req.user._id });
-            }
+        if (mutualFunds) {
+            userMutualFund = await MutualFund.create({ ...mutualFunds, user: req.user._id });
         }
 
         //saving stocks
-        if (stocks && stocks.length > 0) {
-            for (let singleStock of stocks) {
-                userStock = await Stock.create({ ...singleStock, user: req.user._id });
-            }
+        if (stocks) {
+            userStock = await Stock.create({ ...stocks, user: req.user._id });
         }
 
         //saving expenses
-        if (expenses && expenses.length > 0) {
-            for (let singleExpense of expenses) {
-                userExpense = await PersonalExpense.create({ ...singleExpense, user: req.user._id });
-            }
+        if (expenses) {
+            userExpense = await PersonalExpense.create({ ...expenses, user: req.user._id });
         }
 
         //saving loans
-        if (loans && loans.length > 0) {
-            for (let singleLoan of loans) {
-                userLoan = await Loan.create({ ...singleLoan, user: req.user._id });
-            }
+        if (loans) {
+            userLoan = await Loan.create({ ...loans, user: req.user._id });
         }
 
-        return successResponse(res, 'portfolio creation successfull', 200, {});
+        return successResponse(res, 'portfolio creation successfull', 200, {mutualFunds, stocks, bankAccounts, expenses, loans});
 
     } catch (err) {
         errorResponse(res, 'createPortfolio', 500, err);
@@ -176,35 +166,35 @@ const getuserPortfolio = async (req, res) => {
 
 const editPortfolio = async (req, res) => {
     try {
-        const { mutualFunds, stoks, bankAccounts, expenses, loans } = req.body
+        const { mutualFunds, stocks, bankAccounts, expenses, loans } = req.body
         const filter = { _id: req.body.portfolioId, user: req.user._id };
 
-        if (req.body.portfolioType === "mutualFunds") {
+        if (mutualFunds) {
             let updatedMutualFunds = await MutualFund.findOneAndUpdate(filter, mutualFunds, { new: true });
             if (!updatedMutualFunds) return errorResponse(res, 'Mutual fund Not found', 400, {});
             return successResponse(res, 'mutualFunds portfolio updated successfully', 200, updatedMutualFunds);
         }
 
-        if (req.body.portfolioType === "stocks") {
+        if (stocks) {
             let updatedStocks = await Stock.findOneAndUpdate(filter, stoks, { new: true });
             if (!updatedStocks) return errorResponse(res, 'Stock Not found', 400, {});
             return successResponse(res, 'mutualFunds portfolio updated successfully', 200, updatedStocks);
         }
 
-        if (req.body.portfolioType === "bankAccounts") {
+        if (bankAccounts) {
             let updatedBankAccounts = await BankAccount.findOneAndUpdate(filter, bankAccounts, { new: true });
             if (!updatedBankAccounts) return errorResponse(res, 'Bank Account Not found', 400, {});
             return successResponse(res, 'Bank Account portfolio updated successfully', 200, updatedBankAccounts);
         }
 
-        if (req.body.portfolioType === "expenses") {
+        if (expenses) {
             let updatedExpenses = await PersonalExpense.findOneAndUpdate(filter, expenses, { new: true });
             if (!updatedExpenses) return errorResponse(res, 'Expense Not found', 400, {});
             return successResponse(res, 'Expense portfolio updated successfully', 200, updatedExpenses);
 
         }
 
-        if (req.body.portfolioType === "loans") {
+        if (loans) {
             let updatedLoans = await Loan.findOneAndUpdate(filter, loans, { new: true });
             if (!updatedLoans) return errorResponse(res, 'Loan Not found', 400, {});
             return successResponse(res, 'Loan portfolio updated successfully', 200, updatedLoans);
