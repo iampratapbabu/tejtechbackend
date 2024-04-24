@@ -53,10 +53,10 @@ const getPortfolioSummary = async (req, res) => {
         userPortfolioSummary.netWorth = (totalMf + totalBankBalance + totalStocks) - (totalLoans);
 
 
-        return successResponse(res, 'Portfolio summary fetched', 200, userPortfolioSummary);
+        return successResponse(res, 'Portfolio summary fetched', userPortfolioSummary);
 
     } catch (err) {
-        errorResponse(res, 'getSinglePortfolio', 500, err);
+        errorResponse(res, 'getSinglePortfolio', err);
 
     }
 }
@@ -93,10 +93,10 @@ const createPortfolio = async (req, res) => {
             userLoan = await Loan.create({ ...loans, user: req.user._id });
         }
 
-        return successResponse(res, 'portfolio creation successfull', 200, {mutualFunds, stocks, bankAccounts, expenses, loans});
+        return successResponse(res, 'portfolio created successfully', {mutualFunds, stocks, bankAccounts, expenses, loans});
 
     } catch (err) {
-        errorResponse(res, 'createPortfolio', 500, err);
+        errorResponse(res, 'createPortfolio', err);
     }
 }
 
@@ -117,10 +117,10 @@ const getExpenseSummary = async (req, res) => {
 
         userExpense.expenseAmount = totalExpense
 
-        return successResponse(res, 'Portfolio summary fetched', 200, userExpense);
+        return successResponse(res, 'Portfolio summary fetched', userExpense);
 
     } catch (err) {
-        errorResponse(res, 'getSinglePortfolio', 500, err);
+        errorResponse(res, 'getSinglePortfolio', err);
 
     }
 }
@@ -171,40 +171,40 @@ const editPortfolio = async (req, res) => {
 
         if (mutualFunds) {
             let updatedMutualFunds = await MutualFund.findOneAndUpdate(filter, mutualFunds, { new: true });
-            if (!updatedMutualFunds) return errorResponse(res, 'Mutual fund Not found', 400, {});
-            return successResponse(res, 'mutualFunds portfolio updated successfully', 200, updatedMutualFunds);
+            if (!updatedMutualFunds) throw new CustomError("portfolio error",400,"mutual fund not found") 
+            return successResponse(res, 'mutualFunds portfolio updated successfully', updatedMutualFunds);
         }
 
         if (stocks) {
-            let updatedStocks = await Stock.findOneAndUpdate(filter, stoks, { new: true });
-            if (!updatedStocks) return errorResponse(res, 'Stock Not found', 400, {});
-            return successResponse(res, 'mutualFunds portfolio updated successfully', 200, updatedStocks);
+            let updatedStocks = await Stock.findOneAndUpdate(filter, stocks, { new: true });
+            if (!updatedStocks) throw new CustomError("auth Error",400,"stock not found") 
+            return successResponse(res, 'mutualFunds portfolio updated successfully', updatedStocks);
         }
 
         if (bankAccounts) {
             let updatedBankAccounts = await BankAccount.findOneAndUpdate(filter, bankAccounts, { new: true });
-            if (!updatedBankAccounts) return errorResponse(res, 'Bank Account Not found', 400, {});
-            return successResponse(res, 'Bank Account portfolio updated successfully', 200, updatedBankAccounts);
+            if (!updatedBankAccounts) throw new CustomError("auth Error",400,"bank account not found") 
+            return successResponse(res, 'Bank Account portfolio updated successfully', updatedBankAccounts);
         }
 
         if (expenses) {
             let updatedExpenses = await PersonalExpense.findOneAndUpdate(filter, expenses, { new: true });
-            if (!updatedExpenses) return errorResponse(res, 'Expense Not found', 400, {});
-            return successResponse(res, 'Expense portfolio updated successfully', 200, updatedExpenses);
+            if (!updatedExpenses) throw new CustomError("auth Error",400,"expense not found") 
+            return successResponse(res, 'Expense portfolio updated successfully', updatedExpenses);
 
         }
 
         if (loans) {
             let updatedLoans = await Loan.findOneAndUpdate(filter, loans, { new: true });
-            if (!updatedLoans) return errorResponse(res, 'Loan Not found', 400, {});
-            return successResponse(res, 'Loan portfolio updated successfully', 200, updatedLoans);
+            if (!updatedLoans) throw new CustomError("auth Error",400,"loan not found") 
+            return successResponse(res, 'Loan portfolio updated successfully', updatedLoans);
 
         }
 
-        return successResponse(res, 'portfolio type not found', 200, {});
+        return successResponse(res, 'portfolio type not found', {});
 
     } catch (err) {
-        errorResponse(res, 'getSinglePortfolio', 500, err);
+        errorResponse(res, 'getSinglePortfolio', err);
 
     }
 }
@@ -251,10 +251,10 @@ const mfPortfolio = async (req, res) => {
             ]
         )
 
-        return successResponse(res, 'MF summary fetched', 200, mfDetail);
+        return successResponse(res, 'MF summary fetched', mfDetail);
 
     } catch (err) {
-        errorResponse(res, 'getSinglePortfolio', 500, err);
+        errorResponse(res, 'getSinglePortfolio', err);
 
     }
 }
@@ -276,10 +276,10 @@ const mfDiversification = async (req, res) => {
 
         userExpense.expenseAmount = totalExpense
 
-        return successResponse(res, 'Portfolio summary fetched', 200, userExpense);
+        return successResponse(res, 'Portfolio summary fetched', userExpense);
 
     } catch (err) {
-        errorResponse(res, 'getSinglePortfolio', 500, err);
+        errorResponse(res, 'getSinglePortfolio', err);
 
     }
 }
@@ -301,10 +301,10 @@ const mfCalculation = async (req, res) => {
 
         userExpense.expenseAmount = totalExpense
 
-        return successResponse(res, 'Portfolio summary fetched', 200, userExpense);
+        return successResponse(res, 'Portfolio summary fetched', userExpense);
 
     } catch (err) {
-        errorResponse(res, 'getSinglePortfolio', 500, err);
+        errorResponse(res, 'getSinglePortfolio', err);
 
     }
 }
@@ -328,7 +328,7 @@ const mfSuggest = async (req, res) => {
         return successResponse(res, 'mutual fund suggestions fetched', 200, response.data);
 
     } catch (err) {
-        errorResponse(res, 'getSinglePortfolio', 500, err);
+        errorResponse(res, 'getSinglePortfolio', err);
 
     }
 }
@@ -353,10 +353,10 @@ const stocksPortfolio = async (req, res) => {
             ]
         )
 
-        return successResponse(res, 'Stocks summary fetched', 200, stocksDetail);
+        return successResponse(res, 'Stocks summary fetched', stocksDetail);
 
     } catch (err) {
-        errorResponse(res, 'getSinglePortfolio', 500, err);
+        errorResponse(res, 'getSinglePortfolio', err);
 
     }
 }
@@ -378,10 +378,10 @@ const stocksSuggest = async (req, res) => {
 
         userExpense.expenseAmount = totalExpense
 
-        return successResponse(res, 'Portfolio summary fetched', 200, userExpense);
+        return successResponse(res, 'Portfolio summary fetched', userExpense);
 
     } catch (err) {
-        errorResponse(res, 'getSinglePortfolio', 500, err);
+        errorResponse(res, 'getSinglePortfolio', err);
 
     }
 }

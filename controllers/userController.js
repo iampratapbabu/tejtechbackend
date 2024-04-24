@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const multer = require('multer');
 const bcrypt = require('bcrypt');
+const  CustomError  = require('../lib/customError');
 
 
 
@@ -11,10 +12,9 @@ const bcrypt = require('bcrypt');
 const getAllUsers = async (req, res) => {
   try {
     const users = await User.find();
-    successResponse(res, 'successfully fetched all users', 200, { totalUsers: users.length, users });
-
+    successResponse(res, 'successfully fetched all users', { totalUsers: users.length, users });
   } catch (err) {
-    errorResponse(res, 'getAllUsers', 500, err);
+    errorResponse(res, 'getAllUsers', err);
   }
 }
 
@@ -29,7 +29,7 @@ const fileStorage = multer.diskStorage({
         if (err) {
           console.log(err)
         } else {
-          console.log("New directory successfully created.")
+          console.log("new directory successfully created.")
         }
       })
     }
@@ -67,11 +67,11 @@ const signup = async (req, res, err) => {
   try {
     let { firstName, lastName, email, phone, password, confirmPassword } = req.body;
     const checkPhone = await User.findOne({ phone });
-    if (checkPhone) { return errorResponse(res, "This Phone Number has Been already Registered Please Login", 200, {}) };
+    if (checkPhone) {throw new CustomError("auth error",400,"phone has already been registered")}
     const checkEmail = await User.findOne({ email });
-    if (checkEmail) { return errorResponse(res, "This Email has Been already Registered Please Login", 200, {}) };
+    if (checkEmail) { throw new CustomError("auth error",400,"email has been already registered") };
 
-    if (password != confirmPassword) { return errorResponse(res, 'password not matches', 400, {}); };
+    if (password != confirmPassword) {throw new CustomError("auth Error",400,"password not matches") };
     password = await  bcrypt.hash(password,12);
     const user = new User({
       firstName,
@@ -93,10 +93,11 @@ const signup = async (req, res, err) => {
       expiresIn: 86400 // expires in 24 hours
     });
 
-    successResponse(res, 'user registration successfull', 200, { token, user });
+    successResponse(res, 'user has been registered successfully', 200, { token, user });
 
   } catch (err) {
-    errorResponse(res, 'signup', 500, err);
+    console.log(err);
+    errorResponse(res, 'signup', err);
   }
 }
 
@@ -105,26 +106,26 @@ const loginUser = async (req, res) => {
     const user = await User.findOne({ email: req.body.userid }).select('+password');
     console.log(user);
     if (!user) {
-      return errorResponse(res, 'user not exist', 400, {});
+      throw new CustomError("auth Error",400,"user not exist");
     }
     else if (await bcrypt.compare(req.body.password,user.password)) {
       let token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, {
         expiresIn: 86400 // expires in 24 hours
       });
-      successResponse(res, 'user loggedin successfully', 200, { token, user });
+      successResponse(res, 'user loggedin successfully', { token, user });
     } else {
-      errorResponse(res, 'invalid credentials', 400, "username or password is incorrect");
+      throw new CustomError("auth Error",400,"username or password is incorrect") 
     }
   } catch (err) {
-    errorResponse(res, 'loginUser', 500, err);
+    errorResponse(res, 'loginUser', err);
   }
 }
 
 const getMe = (req, res) => {
   try {
-    successResponse(res, 'user fetched successfully', 200, req.user);
+    successResponse(res, 'user fetched successfully', req.user);
   } catch (err) {
-    errorResponse(res, 'getMe', 500, err);
+    errorResponse(res, 'getMe', err);
   }
 }
 
@@ -147,18 +148,18 @@ const editUser = async (req, res) => {
     }
 
     await user.save();
-    successResponse(res, 'user info updated', 200, user);
+    successResponse(res, 'user info updated', user);
   } catch (err) {
-    errorResponse(res, 'editUser', 500, err);
+    errorResponse(res, 'editUser', err);
   }
 }
 
 //admin function
 const deleteUser = async (req, res) => {
   try {
-    successResponse(res, 'user info', 200, req.user);
+    successResponse(res, 'user info', req.user);
   } catch (err) {
-    errorResponse(res, 'deleteUser', 500, err);
+    errorResponse(res, 'deleteUser', err);
   }
 }
 
