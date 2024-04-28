@@ -108,15 +108,17 @@ const loginUser = async (req, res) => {
     if (!user) {
       throw new CustomError("auth Error",400,"user not exist");
     }
-    else if (await bcrypt.compare(req.body.password,user.password)) {
+    else if(await bcrypt.compare(req.body.password,user.password)) {
+      console.log("bcrupt")
       let token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, {
         expiresIn: 86400 // expires in 24 hours
       });
-      successResponse(res, 'user loggedin successfully', { token, user });
+      return successResponse(res, 'user loggedin successfully', { token, user });
     } else {
       throw new CustomError("auth Error",400,"username or password is incorrect") 
     }
   } catch (err) {
+    console.log(err);
     errorResponse(res, 'loginUser', err);
   }
 }
