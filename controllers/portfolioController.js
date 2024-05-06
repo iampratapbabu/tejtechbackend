@@ -130,36 +130,36 @@ const getuserPortfolio = async (req, res) => {
 
         if (req.body.portfolioType === "mutualFunds") {
             let userMutualFunds = await MutualFund.find({ user: req.user._id });
-            return successResponse(res, 'mutualFunds portfolio fetched', 200, { portfolioType: "mutualFunds", userMutualFunds });
+            return successResponse(res, 'mutualFunds portfolio fetched', { portfolioType: "mutualFunds", userMutualFunds });
         }
 
         if (req.body.portfolioType === "stocks") {
             let userStocks = await Stock.find({ user: req.user._id });
-            return successResponse(res, 'stocks fetched', 200, { portfolioType: "stocks", userStocks });
+            return successResponse(res, 'stocks fetched', { portfolioType: "stocks", userStocks });
 
         }
 
         if (req.body.portfolioType === "bankAccounts") {
             let userBankAccounts = await BankAccount.find({ user: req.user._id });
-            return successResponse(res, 'bank accounts fetched', 200, { portfolioType: "bankAccounts", userBankAccounts });
+            return successResponse(res, 'bank accounts fetched', { portfolioType: "bankAccounts", userBankAccounts });
         }
 
         if (req.body.portfolioType === "expenses") {
             let userExpenses = await PersonalExpense.find({ user: req.user._id });
-            return successResponse(res, 'expense fetched', 200, { portfolioType: "expenses", userExpenses });
+            return successResponse(res, 'expense fetched', { portfolioType: "expenses", userExpenses });
 
         }
 
         if (req.body.portfolioType === "loans") {
             let userLoans = await Loan.find({ user: req.user._id });
-            return successResponse(res, 'Loan Portfolio fetched', 200, { portfolioType: "loans", userLoans });
+            return successResponse(res, 'Loan Portfolio fetched', { portfolioType: "loans", userLoans });
 
         }
 
-        return successResponse(res, 'portfolio type not found', 200, {});
+        return successResponse(res, 'portfolio type not found',  {});
 
     } catch (err) {
-        errorResponse(res, 'getSinglePortfolio', 500, err);
+        errorResponse(res, 'getSinglePortfolio', err);
 
     }
 }
@@ -325,7 +325,7 @@ const mfSuggest = async (req, res) => {
         const response = await axios.request(options);
         //console.log(response.data);
 
-        return successResponse(res, 'mutual fund suggestions fetched', 200, response.data);
+        return successResponse(res, 'mutual fund suggestions fetched', response.data);
 
     } catch (err) {
         errorResponse(res, 'getSinglePortfolio', err);

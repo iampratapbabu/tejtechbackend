@@ -227,10 +227,10 @@ const sendOTP = async (req, res) => {
                 </html>`
     }
     transporter.sendMail(mailOptions, (error, email_res) => {
-      if (error) { errorResponse(res, 'Error sending mail', 500, error); }
+      if (error) { errorResponse(res, 'Error sending mail', error); }
       else {
         console.log("Email sent to", email_res)
-        return successResponse(res, 'Email sent successfully', 200, email_res);
+        return successResponse(res, 'Email sent successfully', email_res);
       }
     })
 
@@ -246,10 +246,10 @@ const verifyOTP = async (req, res) => {
       sendOTP(req,res);
     }else{
     let existedOtp = await Otp.findOne({email});
-    if(!existedOtp){errorResponse(res, 'no otp sent to this mail', 400, "failed");}
+    if(!existedOtp){errorResponse(res, 'no otp sent to this mail', "failed");}
     if (existedOtp.otp == otp) {
 
-      return successResponse(res, 'Otp verified', 200, "email verified");
+      return successResponse(res, 'Otp verified', "email verified");
 
       let mailOptions = {
         from: `${process.env.EMAIL_USERNAME}`,
@@ -262,7 +262,7 @@ const verifyOTP = async (req, res) => {
         if (error) { errorResponse(res, 'otp verified but Error sending mail', 400, error); }
         else {
           // console.log("Email sent to", email_res)
-          return successResponse(res, 'Otp verified', 200, email_res);
+          return successResponse(res, 'Otp verified', email_res);
         }
       })
     } else {

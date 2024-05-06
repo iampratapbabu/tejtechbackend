@@ -93,7 +93,7 @@ const signup = async (req, res, err) => {
       expiresIn: 86400 // expires in 24 hours
     });
 
-    successResponse(res, 'user has been registered successfully', 200, { token, user });
+    successResponse(res, 'user has been registered successfully', { token, user });
 
   } catch (err) {
     console.log(err);
