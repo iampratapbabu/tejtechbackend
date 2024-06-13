@@ -15,7 +15,7 @@ mongoose
                         //if we didn't specify any it will create a db with name of test
   })
   .then(() => {
-    console.log("database connected successfully");
+    console.log("DB Connection Success");
   }).catch(err =>{
     console.log("ERR CONNECTING DATABASE",err);
   });
@@ -25,5 +25,5 @@ mongoose
 const port = process.env.PORT || 8000;
 const host = `http://127.0.0.1:`
 app.listen(port,()=>{
-  console.log(`server is running on ${host}${port}`)
+  console.log(`Server is UP and Running on ${host}${port}`)
 });

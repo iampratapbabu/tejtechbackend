@@ -261,20 +261,7 @@ const mfPortfolio = async (req, res) => {
 
 const mfDiversification = async (req, res) => {
     try {
-        let userExpense = {
-            "expenseAmount": 0,
-            // "assets":[],
-            // "liablities":[],
-        }
 
-        let userExpenses = await PersonalExpense.find({ user: req.user._id });
-        let totalExpense = 0;
-
-        for (let expense of userExpenses) {
-            totalExpense += expense?.amount;
-        }
-
-        userExpense.expenseAmount = totalExpense
 
         return successResponse(res, 'Portfolio summary fetched', userExpense);
 
@@ -286,20 +273,7 @@ const mfDiversification = async (req, res) => {
 
 const mfCalculation = async (req, res) => {
     try {
-        let userExpense = {
-            "expenseAmount": 0,
-            // "assets":[],
-            // "liablities":[],
-        }
 
-        let userExpenses = await PersonalExpense.find({ user: req.user._id });
-        let totalExpense = 0;
-
-        for (let expense of userExpenses) {
-            totalExpense += expense?.amount;
-        }
-
-        userExpense.expenseAmount = totalExpense
 
         return successResponse(res, 'Portfolio summary fetched', userExpense);
 
@@ -328,7 +302,7 @@ const mfSuggest = async (req, res) => {
         return successResponse(res, 'mutual fund suggestions fetched', response.data);
 
     } catch (err) {
-        errorResponse(res, 'getSinglePortfolio', err);
+        errorResponse(res, 'mfSuggest', err);
 
     }
 }
@@ -363,22 +337,9 @@ const stocksPortfolio = async (req, res) => {
 
 const stocksSuggest = async (req, res) => {
     try {
-        let userExpense = {
-            "expenseAmount": 0,
-            // "assets":[],
-            // "liablities":[],
-        }
 
-        let userExpenses = await PersonalExpense.find({ user: req.user._id });
-        let totalExpense = 0;
 
-        for (let expense of userExpenses) {
-            totalExpense += expense?.amount;
-        }
-
-        userExpense.expenseAmount = totalExpense
-
-        return successResponse(res, 'Portfolio summary fetched', userExpense);
+        return successResponse(res, 'stock suggestion success', userExpense);
 
     } catch (err) {
         errorResponse(res, 'getSinglePortfolio', err);
