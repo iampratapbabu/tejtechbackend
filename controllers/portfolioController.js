@@ -7,7 +7,8 @@ const PersonalExpense = require('../models/personalExpenseModel');
 const Stock = require('../models/stockModel');
 const { errorResponse, successResponse } = require('../lib/responseHandler');
 const axios = require("axios");
-
+const { userPortfolioSummary } = require('../service/userPortfolioService');
+const CustomError = require('../lib/customError');
 
 const getPortfolioSummary = async (req, res) => {
     try {
@@ -52,7 +53,7 @@ const createPortfolio = async (req, res) => {
             userLoan = await Loan.create({ ...loans, user: req.user._id });
         }
 
-        return successResponse(res, 'portfolio created successfully', {mutualFunds, stocks, bankAccounts, expenses, loans});
+        return successResponse(res, 'Portfolio Created Successfully', { mutualFunds, stocks, bankAccounts, expenses, loans });
 
     } catch (err) {
         errorResponse(res, 'portfolio_error', err);
@@ -76,7 +77,7 @@ const getExpenseSummary = async (req, res) => {
 
         userExpense.expenseAmount = totalExpense
 
-        return successResponse(res, 'Portfolio summary fetched', userExpense);
+        return successResponse(res, 'Expense Summary Fetched', userExpense);
 
     } catch (err) {
         errorResponse(res, 'portfolio_error', err);
@@ -86,36 +87,31 @@ const getExpenseSummary = async (req, res) => {
 
 const getuserPortfolio = async (req, res) => {
     try {
-
-        if (req.body.portfolioType === "mutualFunds") {
-            let userMutualFunds = await MutualFund.find({ user: req.user._id });
-            return successResponse(res, 'mutualFunds portfolio fetched', { portfolioType: "mutualFunds", userMutualFunds });
+        const { portfolioType } = req.body;
+        let portfolio;
+        switch (portfolioType) {
+            case "mutualFunds":
+                portfolio = await MutualFund.find({ user: req.user._id });
+                break;
+            case "stocks":
+                portfolio = await Stock.find({ user: req.user._id });
+                break;
+            case "bankAccounts":
+                portfolio = await BankAccount.find({ user: req.user._id });
+                break;
+            case "expenses":
+                portfolio = await PersonalExpense.find({ user: req.user._id });
+                break;
+            case "loans":
+                portfolio = await Loan.find({ user: req.user._id });
+                break;
+            default:
+                portfolio = null;
         }
-
-        if (req.body.portfolioType === "stocks") {
-            let userStocks = await Stock.find({ user: req.user._id });
-            return successResponse(res, 'stocks fetched', { portfolioType: "stocks", userStocks });
-
+        if(portfolio == null){
+            throw new CustomError("portfolio_error",400,"Portfolio Detail Not Found");
         }
-
-        if (req.body.portfolioType === "bankAccounts") {
-            let userBankAccounts = await BankAccount.find({ user: req.user._id });
-            return successResponse(res, 'bank accounts fetched', { portfolioType: "bankAccounts", userBankAccounts });
-        }
-
-        if (req.body.portfolioType === "expenses") {
-            let userExpenses = await PersonalExpense.find({ user: req.user._id });
-            return successResponse(res, 'expense fetched', { portfolioType: "expenses", userExpenses });
-
-        }
-
-        if (req.body.portfolioType === "loans") {
-            let userLoans = await Loan.find({ user: req.user._id });
-            return successResponse(res, 'Loan Portfolio fetched', { portfolioType: "loans", userLoans });
-
-        }
-
-        return successResponse(res, 'portfolio type not found',  {});
+        return successResponse(res, 'Portfolio Fetched Successfully', portfolio);
 
     } catch (err) {
         errorResponse(res, 'portfolio_error', err);
@@ -130,36 +126,30 @@ const editPortfolio = async (req, res) => {
 
         if (mutualFunds) {
             let updatedMutualFunds = await MutualFund.findOneAndUpdate(filter, mutualFunds, { new: true });
-            if (!updatedMutualFunds) throw new CustomError("portfolio error",400,"mutual fund not found") 
+            if (!updatedMutualFunds) throw new CustomError("portfolio error", 400, "mutual fund not found")
             return successResponse(res, 'mutualFunds portfolio updated successfully', updatedMutualFunds);
         }
-
         if (stocks) {
             let updatedStocks = await Stock.findOneAndUpdate(filter, stocks, { new: true });
-            if (!updatedStocks) throw new CustomError("auth Error",400,"stock not found") 
+            if (!updatedStocks) throw new CustomError("auth Error", 400, "stock not found")
             return successResponse(res, 'mutualFunds portfolio updated successfully', updatedStocks);
         }
-
         if (bankAccounts) {
             let updatedBankAccounts = await BankAccount.findOneAndUpdate(filter, bankAccounts, { new: true });
-            if (!updatedBankAccounts) throw new CustomError("auth Error",400,"bank account not found") 
+            if (!updatedBankAccounts) throw new CustomError("auth Error", 400, "bank account not found")
             return successResponse(res, 'Bank Account portfolio updated successfully', updatedBankAccounts);
         }
-
         if (expenses) {
             let updatedExpenses = await PersonalExpense.findOneAndUpdate(filter, expenses, { new: true });
-            if (!updatedExpenses) throw new CustomError("auth Error",400,"expense not found") 
+            if (!updatedExpenses) throw new CustomError("auth Error", 400, "expense not found")
             return successResponse(res, 'Expense portfolio updated successfully', updatedExpenses);
-
         }
-
         if (loans) {
             let updatedLoans = await Loan.findOneAndUpdate(filter, loans, { new: true });
-            if (!updatedLoans) throw new CustomError("auth Error",400,"loan not found") 
+            if (!updatedLoans) throw new CustomError("auth Error", 400, "loan not found")
             return successResponse(res, 'Loan portfolio updated successfully', updatedLoans);
 
         }
-
         return successResponse(res, 'portfolio type not found', {});
 
     } catch (err) {
@@ -178,13 +168,10 @@ const mfPortfolio = async (req, res) => {
             totalAmount: 0,
             investedAmount: 0,
             returnAmount: 0,
-
         }
 
         const mf = await MutualFund.find({ user: req.user._id });
-
         let userId = req.user.id;
-
         const mfDetail = await MutualFund.aggregate(
             [
                 {
@@ -220,8 +207,6 @@ const mfPortfolio = async (req, res) => {
 
 const mfDiversification = async (req, res) => {
     try {
-
-
         return successResponse(res, 'Portfolio summary fetched', userExpense);
 
     } catch (err) {
@@ -232,10 +217,7 @@ const mfDiversification = async (req, res) => {
 
 const mfCalculation = async (req, res) => {
     try {
-
-
-        return successResponse(res, 'Portfolio summary fetched', userExpense);
-
+        return successResponse(res, 'Portfolio Summary Fetched', userExpense);
     } catch (err) {
         errorResponse(res, 'portfolio_error', err);
 
@@ -244,7 +226,6 @@ const mfCalculation = async (req, res) => {
 
 const mfSuggest = async (req, res) => {
     try {
-
         const options = {
             method: 'GET',
             url: 'https://top-performing-mutual-funds.p.rapidapi.com/feed_mf_promotion.cms',
@@ -258,7 +239,7 @@ const mfSuggest = async (req, res) => {
         const response = await axios.request(options);
         //console.log(response.data);
 
-        return successResponse(res, 'mutual fund suggestions fetched', response.data);
+        return successResponse(res, 'Mutual Fund Suggestion Fetched', response.data);
 
     } catch (err) {
         errorResponse(res, 'portfolio_error', err);
@@ -270,7 +251,6 @@ const mfSuggest = async (req, res) => {
 //stocks service
 const stocksPortfolio = async (req, res) => {
     try {
-
         const stocksDetail = await Stock.aggregate(
             [
                 {
@@ -285,8 +265,7 @@ const stocksPortfolio = async (req, res) => {
                 }
             ]
         )
-
-        return successResponse(res, 'Stocks summary fetched', stocksDetail);
+        return successResponse(res, 'Stocks Summary Fetched', stocksDetail);
 
     } catch (err) {
         errorResponse(res, 'portfolio_error', err);
@@ -296,9 +275,7 @@ const stocksPortfolio = async (req, res) => {
 
 const stocksSuggest = async (req, res) => {
     try {
-
-
-        return successResponse(res, 'stock suggestion success', userExpense);
+        return successResponse(res, 'Stock Suggestion Success', userExpense);
 
     } catch (err) {
         errorResponse(res, 'portfolio_error', err);
