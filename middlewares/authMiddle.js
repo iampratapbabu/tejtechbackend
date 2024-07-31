@@ -1,22 +1,27 @@
 const User = require('../models/userModel');
 const { errorResponse, successResponse } = require('../lib/responseHandler');
 const jwt = require('jsonwebtoken');
+const CustomError = require('../lib/customError');
 
 
 const protect = async (req, res, next) => {
   try {
-    let token = req.headers['x-access-token'];
+    const token = req.headers['x-access-token'];
     if (!token) {
-      return errorResponse(res, 'failed to authenticate', 401, {});
+      throw new CustomError("auth_error",401,"Failed To Authenticate");
     }
-    let decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    console.log("decoded",decoded);
     let user = await User.findById(decoded.id);
-    if (!user) return errorResponse(res, 'no user found', 404, {});
+    if (!user){
+      throw new CustomError("auth_error",401,"No User Found");
+    }
     req.user = user;
     next();
 
   } catch (err) {
-    errorResponse(res, 'protect middleare', 500, err);
+    console.log(err);
+    errorResponse(res, 'Authentication Error', err);
   }
 }
 
@@ -25,11 +30,11 @@ const checkAdmin = async (req, res, next) => {
     if (req.user.role == "admin") {
       next();
     } else {
-      errorResponse(res, 'you are not an admin', 400, "Authorization failed");
+      errorResponse(res, 'Authentication Error', "You Are Not An Admin");
     }
 
   } catch (err) {
-    errorResponse(res, 'checkAdmin ', 404, err);
+    errorResponse(res, 'admin_error', err);
   }
 }
 

@@ -11,52 +11,11 @@ const axios = require("axios");
 
 const getPortfolioSummary = async (req, res) => {
     try {
-        let userPortfolioSummary = {
-            "netWorth": 0,
-            "totalAssets": 0,
-            "totalLiablites": 0,
-            // "assets":[],
-            // "liablities":[],
-        }
-
-        let userMutualFunds = await MutualFund.find({ user: req.user._id });
-        let userStocks = await Stock.find({ user: req.user._id });
-        let userBankAccounts = await BankAccount.find({ user: req.user._id });
-        let userExpenses = await PersonalExpense.find({ user: req.user._id });
-        let userLoans = await Loan.find({ user: req.user._id });
-
-        let totalMf = 0, totalStocks = 0, totalBankBalance = 0, totalExpense = 0, totalLoans = 0;
-
-        //calculating assests
-        for (let mutualFund of userMutualFunds) {
-            totalMf += mutualFund?.amount;
-        }
-
-        for (let stock of userStocks) {
-            totalStocks += stock?.amount;
-        }
-
-        for (let bankAccount of userBankAccounts) {
-            totalBankBalance += bankAccount?.currentBalance;
-        }
-
-        for (let expense of userExpenses) {
-            totalExpense += expense?.amount;
-        }
-
-        for (let loan of userLoans) {
-            totalLoans += loan?.amount;
-        }
-
-        userPortfolioSummary.totalAssets = totalMf + totalBankBalance + totalStocks;
-        userPortfolioSummary.totalLiablites = totalLoans;
-        userPortfolioSummary.netWorth = (totalMf + totalBankBalance + totalStocks) - (totalLoans);
-
-
-        return successResponse(res, 'Portfolio summary fetched', userPortfolioSummary);
+        const userPortfolio = await userPortfolioSummary(req);
+        return successResponse(res, 'Portfolio summary fetched', userPortfolio);
 
     } catch (err) {
-        errorResponse(res, 'getSinglePortfolio', err);
+        errorResponse(res, 'portfolio_error', err);
 
     }
 }
@@ -96,7 +55,7 @@ const createPortfolio = async (req, res) => {
         return successResponse(res, 'portfolio created successfully', {mutualFunds, stocks, bankAccounts, expenses, loans});
 
     } catch (err) {
-        errorResponse(res, 'createPortfolio', err);
+        errorResponse(res, 'portfolio_error', err);
     }
 }
 
@@ -120,7 +79,7 @@ const getExpenseSummary = async (req, res) => {
         return successResponse(res, 'Portfolio summary fetched', userExpense);
 
     } catch (err) {
-        errorResponse(res, 'getSinglePortfolio', err);
+        errorResponse(res, 'portfolio_error', err);
 
     }
 }
@@ -159,7 +118,7 @@ const getuserPortfolio = async (req, res) => {
         return successResponse(res, 'portfolio type not found',  {});
 
     } catch (err) {
-        errorResponse(res, 'getSinglePortfolio', err);
+        errorResponse(res, 'portfolio_error', err);
 
     }
 }
@@ -204,7 +163,7 @@ const editPortfolio = async (req, res) => {
         return successResponse(res, 'portfolio type not found', {});
 
     } catch (err) {
-        errorResponse(res, 'getSinglePortfolio', err);
+        errorResponse(res, 'portfolio_error', err);
 
     }
 }
@@ -254,7 +213,7 @@ const mfPortfolio = async (req, res) => {
         return successResponse(res, 'MF summary fetched', mfDetail);
 
     } catch (err) {
-        errorResponse(res, 'getSinglePortfolio', err);
+        errorResponse(res, 'portfolio_error', err);
 
     }
 }
@@ -266,7 +225,7 @@ const mfDiversification = async (req, res) => {
         return successResponse(res, 'Portfolio summary fetched', userExpense);
 
     } catch (err) {
-        errorResponse(res, 'getSinglePortfolio', err);
+        errorResponse(res, 'portfolio_error', err);
 
     }
 }
@@ -278,7 +237,7 @@ const mfCalculation = async (req, res) => {
         return successResponse(res, 'Portfolio summary fetched', userExpense);
 
     } catch (err) {
-        errorResponse(res, 'getSinglePortfolio', err);
+        errorResponse(res, 'portfolio_error', err);
 
     }
 }
@@ -302,7 +261,7 @@ const mfSuggest = async (req, res) => {
         return successResponse(res, 'mutual fund suggestions fetched', response.data);
 
     } catch (err) {
-        errorResponse(res, 'mfSuggest', err);
+        errorResponse(res, 'portfolio_error', err);
 
     }
 }
@@ -330,7 +289,7 @@ const stocksPortfolio = async (req, res) => {
         return successResponse(res, 'Stocks summary fetched', stocksDetail);
 
     } catch (err) {
-        errorResponse(res, 'getSinglePortfolio', err);
+        errorResponse(res, 'portfolio_error', err);
 
     }
 }
@@ -342,7 +301,7 @@ const stocksSuggest = async (req, res) => {
         return successResponse(res, 'stock suggestion success', userExpense);
 
     } catch (err) {
-        errorResponse(res, 'getSinglePortfolio', err);
+        errorResponse(res, 'portfolio_error', err);
 
     }
 }

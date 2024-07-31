@@ -4,7 +4,8 @@ const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const multer = require('multer');
 const bcrypt = require('bcrypt');
-const  CustomError  = require('../lib/customError');
+const CustomError = require('../lib/customError');
+const { userPortfolioSummary } = require('../service/userPortfolioService');
 
 
 
@@ -12,9 +13,9 @@ const  CustomError  = require('../lib/customError');
 const getAllUsers = async (req, res) => {
   try {
     const users = await User.find();
-    successResponse(res, 'successfully fetched all users', { totalUsers: users.length, users });
+    successResponse(res, 'Successfully Fetched All Users', { totalUsers: users.length, users });
   } catch (err) {
-    errorResponse(res, 'getAllUsers', err);
+    errorResponse(res, 'user_error', err);
   }
 }
 
@@ -67,12 +68,11 @@ const signup = async (req, res, err) => {
   try {
     let { firstName, lastName, email, phone, password, confirmPassword } = req.body;
     const checkPhone = await User.findOne({ phone });
-    if (checkPhone) {throw new CustomError("auth error",400,"phone has already been registered")}
+    if (checkPhone) { throw new CustomError("auth_error", 400, "Phone Has Already Been Registered") }
     const checkEmail = await User.findOne({ email });
-    if (checkEmail) { throw new CustomError("auth error",400,"email has been already registered") };
-
-    if (password != confirmPassword) {throw new CustomError("auth Error",400,"password not matches") };
-    password = await  bcrypt.hash(password,12);
+    if (checkEmail) { throw new CustomError("auth_error", 400, "Email Has Been Already Registered") };
+    if (password != confirmPassword) { throw new CustomError("auth_error", 400, "Password Not Matched With Confirm Password") };
+    password = await bcrypt.hash(password, 12);
     const user = new User({
       firstName,
       lastName,
@@ -93,11 +93,11 @@ const signup = async (req, res, err) => {
       expiresIn: 86400 // expires in 24 hours
     });
 
-    successResponse(res, 'user has been registered successfully', { token, user });
+    successResponse(res, 'User Has Been Registered Successfully', { token, user });
 
   } catch (err) {
     console.log(err);
-    errorResponse(res, 'signup', err);
+    errorResponse(res, 'auth_error', err);
   }
 }
 
@@ -106,28 +106,30 @@ const loginUser = async (req, res) => {
     const user = await User.findOne({ email: req.body.userid }).select('+password');
     console.log(user);
     if (!user) {
-      throw new CustomError("auth Error",400,"user not exist");
+      throw new CustomError("auth_error", 400, "User Not Exist");
     }
-    else if(await bcrypt.compare(req.body.password,user.password)) {
-      console.log("bcrupt")
+    else if (await bcrypt.compare(req.body.password, user.password)) {
       let token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, {
         expiresIn: 86400 // expires in 24 hours
       });
-      return successResponse(res, 'user loggedin successfully', { token, user });
+      //get user portfolio summary
+      req.user = user;
+      const userPortfolio = await userPortfolioSummary(req);
+      return successResponse(res, 'LoggedIn Successfully', {token, user,userPortfolio});
     } else {
-      throw new CustomError("auth Error",400,"username or password is incorrect") 
+      throw new CustomError("auth_error", 400, "Username OR Password Is Incorrect");
     }
   } catch (err) {
     console.log(err);
-    errorResponse(res, 'loginUser', err);
+    errorResponse(res, 'auth_error', err);
   }
 }
 
 const getMe = (req, res) => {
   try {
-    successResponse(res, 'user fetched successfully', req.user);
+    successResponse(res, 'User Fetched Successfully', req.user);
   } catch (err) {
-    errorResponse(res, 'getMe', err);
+    errorResponse(res, 'user_error', err);
   }
 }
 
@@ -150,9 +152,9 @@ const editUser = async (req, res) => {
     }
 
     await user.save();
-    successResponse(res, 'user info updated', user);
+    successResponse(res, 'User Info Updated', user);
   } catch (err) {
-    errorResponse(res, 'editUser', err);
+    errorResponse(res, 'user_error', err);
   }
 }
 
@@ -161,7 +163,7 @@ const deleteUser = async (req, res) => {
   try {
     successResponse(res, 'user info', req.user);
   } catch (err) {
-    errorResponse(res, 'deleteUser', err);
+    errorResponse(res, 'user_error', err);
   }
 }
 
