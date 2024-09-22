@@ -103,10 +103,11 @@ const signup = async (req, res, err) => {
 
 const loginUser = async (req, res) => {
   try {
+    console.log(req.body);
     const user = await User.findOne({ email: req.body.userid }).select('+password');
     console.log(user);
     if (!user) {
-      throw new CustomError("auth_error", 400, "User Not Exist");
+      throw new CustomError("auth_error", 400, "User Not Exists");
     }
     else if (await bcrypt.compare(req.body.password, user.password)) {
       let token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, {
@@ -115,7 +116,7 @@ const loginUser = async (req, res) => {
       //get user portfolio summary
       req.user = user;
       const userPortfolio = await userPortfolioSummary(req);
-      return successResponse(res, 'LoggedIn Successfully', {token, user,userPortfolio});
+      return successResponse(res, 'LoggedIn Successfully', { token, user, userPortfolio });
     } else {
       throw new CustomError("auth_error", 400, "Username OR Password Is Incorrect");
     }
@@ -148,7 +149,7 @@ const editUser = async (req, res) => {
 
     if (req.file) {
       user.photo = req.file.path;
-      console.log("photo updated of", user.firstName);
+      console.log("Photo updated of", user.firstName);
     }
 
     await user.save();
