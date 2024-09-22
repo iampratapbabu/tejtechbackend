@@ -11,7 +11,6 @@ const protect = async (req, res, next) => {
       throw new CustomError("auth_error",401,"Failed To Authenticate");
     }
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
-    console.log("decoded",decoded);
     let user = await User.findById(decoded.id);
     if (!user){
       throw new CustomError("auth_error",401,"No User Found");

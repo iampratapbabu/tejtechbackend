@@ -17,6 +17,9 @@ router.route('/user-portfolio')
 router.route('/edit-portfolio')
 .patch(authMiddle.protect,portfolioController.editPortfolio);
 
+router.route('/single/:portfolioId')
+.delete(authMiddle.protect,portfolioController.deletePortfolio)
+
 
 
 

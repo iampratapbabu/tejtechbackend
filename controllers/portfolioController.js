@@ -23,37 +23,42 @@ const getPortfolioSummary = async (req, res) => {
 
 const createPortfolio = async (req, res) => {
     try {
-        const { mutualFunds, stocks, bankAccounts, expenses, loans } = req.body;
-        let userBankAccount, userMutualFund, userStock, userExpense, userLoan;
+        const { portfolioType } = req.query;
+        console.log(portfolioType);
 
+        const { mutualFunds, stocks, bankAccounts, expenses, loans } = req.body;
         let resBody = {};
 
-        //saving bank accounts
-        if (bankAccounts) {
-            userBankAccount = await BankAccount.create({ ...bankAccounts, user: req.user._id });
+        switch (portfolioType) {
+            case "mutualFunds":
+                let userMutualFunds = await MutualFund.create({ ...mutualFunds, user: req.user._id });
+                resBody.message = "Mutual Funds Added Successfully";
+                resBody.data = userMutualFunds;
+                break;
+            case "stocks":
+                let userStock = await Stock.create({ ...stocks, user: req.user._id });
+                resBody.message = "Stock Added Successfully";
+                resBody.data = userStock;
+                break;
+            case "bankAccounts":
+                let userBankAccount = await BankAccount.create({ ...bankAccounts, user: req.user._id });
+                resBody.message = "Bank Account Added Successfully";
+                resBody.data = userBankAccount;
+                break;
+            case "expenses":
+                let userExpense = await PersonalExpense.create({ ...expenses, user: req.user._id });
+                resBody.message = "Expense Added Successfully";
+                resBody.data = userExpense;
+                break;
+            case "loans":
+                let userLoan = await Loan.create({ ...loans, user: req.user._id });
+                resBody.message = "Loan Added Successfully";
+                resBody.data = userLoan;
+                break;
+            default:
+                break;
         }
-
-        //saving mfs
-        if (mutualFunds) {
-            userMutualFund = await MutualFund.create({ ...mutualFunds, user: req.user._id });
-        }
-
-        //saving stocks
-        if (stocks) {
-            userStock = await Stock.create({ ...stocks, user: req.user._id });
-        }
-
-        //saving expenses
-        if (expenses) {
-            userExpense = await PersonalExpense.create({ ...expenses, user: req.user._id });
-        }
-
-        //saving loans
-        if (loans) {
-            userLoan = await Loan.create({ ...loans, user: req.user._id });
-        }
-
-        return successResponse(res, 'Portfolio Created Successfully', { mutualFunds, stocks, bankAccounts, expenses, loans });
+        return successResponse(res, resBody.message, resBody.data);
 
     } catch (err) {
         errorResponse(res, 'portfolio_error', err);
@@ -108,8 +113,8 @@ const getuserPortfolio = async (req, res) => {
             default:
                 portfolio = null;
         }
-        if(portfolio == null){
-            throw new CustomError("portfolio_error",400,"Portfolio Detail Not Found");
+        if (portfolio == null) {
+            throw new CustomError("portfolio_error", 400, "Portfolio Detail Not Found");
         }
         return successResponse(res, 'Portfolio Fetched Successfully', portfolio);
 
@@ -122,29 +127,38 @@ const getuserPortfolio = async (req, res) => {
 const editPortfolio = async (req, res) => {
     try {
         const { mutualFunds, stocks, bankAccounts, expenses, loans } = req.body
-        const filter = { _id: req.body.portfolioId, user: req.user._id };
 
         if (mutualFunds) {
+            const filter = { _id: req.body.mutualFunds._id, user: req.user._id };
+
             let updatedMutualFunds = await MutualFund.findOneAndUpdate(filter, mutualFunds, { new: true });
             if (!updatedMutualFunds) throw new CustomError("portfolio error", 400, "mutual fund not found")
-            return successResponse(res, 'mutualFunds portfolio updated successfully', updatedMutualFunds);
+            return successResponse(res, 'Mutual Funds portfolio updated successfully', updatedMutualFunds);
         }
         if (stocks) {
+            const filter = { _id: req.body.stocks._id, user: req.user._id };
+
             let updatedStocks = await Stock.findOneAndUpdate(filter, stocks, { new: true });
             if (!updatedStocks) throw new CustomError("auth Error", 400, "stock not found")
-            return successResponse(res, 'mutualFunds portfolio updated successfully', updatedStocks);
+            return successResponse(res, 'Stocks portfolio updated successfully', updatedStocks);
         }
         if (bankAccounts) {
+            const filter = { _id: req.body.bankAccounts._id, user: req.user._id };
+
             let updatedBankAccounts = await BankAccount.findOneAndUpdate(filter, bankAccounts, { new: true });
             if (!updatedBankAccounts) throw new CustomError("auth Error", 400, "bank account not found")
             return successResponse(res, 'Bank Account portfolio updated successfully', updatedBankAccounts);
         }
         if (expenses) {
+            const filter = { _id: req.body.expenses._id, user: req.user._id };
+
             let updatedExpenses = await PersonalExpense.findOneAndUpdate(filter, expenses, { new: true });
             if (!updatedExpenses) throw new CustomError("auth Error", 400, "expense not found")
             return successResponse(res, 'Expense portfolio updated successfully', updatedExpenses);
         }
         if (loans) {
+            const filter = { _id: req.body.loans._id, user: req.user._id };
+
             let updatedLoans = await Loan.findOneAndUpdate(filter, loans, { new: true });
             if (!updatedLoans) throw new CustomError("auth Error", 400, "loan not found")
             return successResponse(res, 'Loan portfolio updated successfully', updatedLoans);
@@ -157,6 +171,52 @@ const editPortfolio = async (req, res) => {
 
     }
 }
+
+const deletePortfolio = async (req, res) => {
+    try {
+        const { portfolioType } = req.query;
+        const {portfolioId} = req.params;
+
+        
+        let resBody = {};
+
+        switch (portfolioType) {
+            case "mutualFunds":
+                let userMutualFunds = await MutualFund.findByIdAndDelete(portfolioId);
+                resBody.message = "Mutual Funds Deleted Successfully";
+                resBody.data = userMutualFunds;
+                break;
+            case "stocks":
+                let userStock = await Stock.findByIdAndDelete(portfolioId);
+                console.log(portfolioId);
+                resBody.message = "Stock Deleted Successfully";
+                resBody.data = userStock;
+                break;
+            case "bankAccounts":
+                let userBankAccount = await BankAccount.findByIdAndDelete(portfolioId);
+                resBody.message = "Bank Account Deletd Successfully";
+                resBody.data = userBankAccount;
+                break;
+            case "expenses":
+                let userExpense = await PersonalExpense.findByIdAndDelete(portfolioId);
+                resBody.message = "Expense Deleted Successfully";
+                resBody.data = userExpense;
+                break;
+            case "loans":
+                let userLoan = await Loan.findByIdAndDelete(portfolioId);
+                resBody.message = "Loan Deleted Successfully";
+                resBody.data = userLoan;
+                break;
+            default:
+                break;
+        }
+        return successResponse(res, resBody.message, resBody.data);
+
+    } catch (err) {
+        errorResponse(res, 'portfolio_error', err);
+    }
+}
+
 
 //mfservice
 
@@ -287,6 +347,7 @@ const stocksSuggest = async (req, res) => {
 module.exports = {
     createPortfolio,
     getuserPortfolio,
+    deletePortfolio,
     getExpenseSummary,
     editPortfolio,
     getPortfolioSummary,
