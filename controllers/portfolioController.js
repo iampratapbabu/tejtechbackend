@@ -98,25 +98,116 @@ const getuserPortfolio = async (req, res) => {
             case "mutualFunds":
                 resBody.portfolio = await MutualFund.find({ user: req.user._id });
                 resBody.message = "Mutual Funds Fetched Successfully";
+                resBody["portfolioSummary"] = {
+                    obj1:{
+                        label: "Current",
+                        value: 229000
+                    },
+                    obj2:{
+                        label: "Returns",
+                        value: 56000
+                    },
+                    obj3:{
+                        label: "Invested",
+                        value: 173000
+                    },
+                    obj4:{
+                        label: "Return(%)",
+                        value: 32.36
+                    }
+                }
                 break;
             case "stocks":
                 resBody.portfolio = await Stock.find({ user: req.user._id });
                 resBody.message = "Stocks Fetched Successfully";
+                resBody["portfolioSummary"] = {
+                    obj1:{
+                        label: "Current",
+                        value: 229000
+                    },
+                    obj2:{
+                        label: "Returns",
+                        value: 56000
+                    },
+                    obj3:{
+                        label: "Invested",
+                        value: 173000
+                    },
+                    obj4:{
+                        label: "Return(%)",
+                        value: 32.36
+                    }
+                }
 
                 break;
             case "bankAccounts":
                 resBody.portfolio = await BankAccount.find({ user: req.user._id });
                 resBody.message = "Bank Accounts Fetched Successfully";
+                resBody["portfolioSummary"] = {
+                    obj1:{
+                        label: "Current Balance",
+                        value: 229000
+                    },
+                    obj2:{
+                        label: "Returns",
+                        value: 56000
+                    },
+                    obj3:{
+                        label: "Balance",
+                        value: 173000
+                    },
+                    obj4:{
+                        label: "Return(%)",
+                        value: 32.36
+                    }
+                }
+
 
                 break;
             case "expenses":
                 resBody.portfolio = await PersonalExpense.find({ user: req.user._id });
                 resBody.message = "Expenses Fetched Successfully";
+                resBody["portfolioSummary"] = {
+                    obj1:{
+                        label: "Total Expense",
+                        value: 229000
+                    },
+                    obj2:{
+                        label: "Week",
+                        value: 56000
+                    },
+                    obj3:{
+                        label: "Month",
+                        value: 173000
+                    },
+                    obj4:{
+                        label: "% of NW",
+                        value: 32.36
+                    }
+                }
 
                 break;
             case "loans":
                 resBody.portfolio = await Loan.find({ user: req.user._id });
                 resBody.message = "Loans Fetched Successfully";
+                resBody["portfolioSummary"] = {
+                    obj1:{
+                        label: "Total Amount",
+                        value: 229000
+                    },
+                    obj2:{
+                        label: "Amount Paid",
+                        value: 56000
+                    },
+                    obj3:{
+                        label: "Remaining",
+                        value: 173000
+                    },
+                    obj4:{
+                        label: "Interest(%)",
+                        value: 32.36
+                    }
+                }
 
                 break;
             default:
@@ -125,7 +216,12 @@ const getuserPortfolio = async (req, res) => {
         if (resBody.portfolio == null) {
             throw new CustomError("portfolio_error", 400, "Portfolio Detail Not Found");
         }
-        return successResponse(res, 'Portfolio Fetched Successfully', {portfolio:resBody.portfolio});
+        return successResponse(res, resBody.message,
+            {
+                portfolio: resBody.portfolio,
+                portfolioSummary: resBody["portfolioSummary"]
+            }
+        );
 
     } catch (err) {
         errorResponse(res, 'portfolio_error', err);
@@ -184,9 +280,9 @@ const editPortfolio = async (req, res) => {
 const deletePortfolio = async (req, res) => {
     try {
         const { portfolioType } = req.query;
-        const {portfolioId} = req.params;
+        const { portfolioId } = req.params;
 
-        
+
         let resBody = {};
 
         switch (portfolioType) {
