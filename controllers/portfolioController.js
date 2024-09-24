@@ -93,30 +93,39 @@ const getExpenseSummary = async (req, res) => {
 const getuserPortfolio = async (req, res) => {
     try {
         const { portfolioType } = req.body;
-        let portfolio;
+        let resBody = {};
         switch (portfolioType) {
             case "mutualFunds":
-                portfolio = await MutualFund.find({ user: req.user._id });
+                resBody.portfolio = await MutualFund.find({ user: req.user._id });
+                resBody.message = "Mutual Funds Fetched Successfully";
                 break;
             case "stocks":
-                portfolio = await Stock.find({ user: req.user._id });
+                resBody.portfolio = await Stock.find({ user: req.user._id });
+                resBody.message = "Stocks Fetched Successfully";
+
                 break;
             case "bankAccounts":
-                portfolio = await BankAccount.find({ user: req.user._id });
+                resBody.portfolio = await BankAccount.find({ user: req.user._id });
+                resBody.message = "Bank Accounts Fetched Successfully";
+
                 break;
             case "expenses":
-                portfolio = await PersonalExpense.find({ user: req.user._id });
+                resBody.portfolio = await PersonalExpense.find({ user: req.user._id });
+                resBody.message = "Expenses Fetched Successfully";
+
                 break;
             case "loans":
-                portfolio = await Loan.find({ user: req.user._id });
+                resBody.portfolio = await Loan.find({ user: req.user._id });
+                resBody.message = "Loans Fetched Successfully";
+
                 break;
             default:
-                portfolio = null;
+                resBody.portfolio = null;
         }
-        if (portfolio == null) {
+        if (resBody.portfolio == null) {
             throw new CustomError("portfolio_error", 400, "Portfolio Detail Not Found");
         }
-        return successResponse(res, 'Portfolio Fetched Successfully', portfolio);
+        return successResponse(res, 'Portfolio Fetched Successfully', {portfolio:resBody.portfolio});
 
     } catch (err) {
         errorResponse(res, 'portfolio_error', err);
