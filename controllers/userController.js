@@ -66,7 +66,7 @@ const uploadMultipleImages = upload.array('userphotos', 10);
 
 const signup = async (req, res, err) => {
   try {
-    let { firstName, lastName, email, phone, password, confirmPassword } = req.body;
+    let { firstName, lastName, email,gender, phone, password, confirmPassword } = req.body;
     const checkPhone = await User.findOne({ phone });
     if (checkPhone) { throw new CustomError("auth_error", 400, "Phone Has Already Been Registered") }
     const checkEmail = await User.findOne({ email });
@@ -76,6 +76,7 @@ const signup = async (req, res, err) => {
     const user = new User({
       firstName,
       lastName,
+      gender,
       email,
       phone,
       password,
