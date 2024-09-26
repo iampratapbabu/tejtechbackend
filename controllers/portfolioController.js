@@ -9,6 +9,9 @@ const { errorResponse, successResponse } = require('../lib/responseHandler');
 const axios = require("axios");
 const { userPortfolioSummary } = require('../service/userPortfolioService');
 const CustomError = require('../lib/customError');
+const { mongoose } = require('mongoose');
+const { ObjectId } = mongoose.Types;
+
 
 const getPortfolioSummary = async (req, res) => {
     try {
@@ -93,72 +96,126 @@ const getExpenseSummary = async (req, res) => {
 const getuserPortfolio = async (req, res) => {
     try {
         const { portfolioType } = req.body;
+        const userId = req.user._id;
         let resBody = {};
+        let mongoRes,investedAmount,returnPercent,returnAmount,currentAmount;
         switch (portfolioType) {
             case "mutualFunds":
-                resBody.portfolio = await MutualFund.find({ user: req.user._id });
+                resBody.portfolio = await MutualFund.find({ user: userId });
+                mongoRes = await MutualFund.aggregate([
+                    {
+                        $match: { user: new ObjectId(userId) } // Filter documents with user id
+                    },
+                    {
+                        $group: {
+                            _id: null,
+                            totalAmount: { $sum: "$amount" } // Calculate the sum of 'amount'
+                        },
+                    }
+                ]);
+
+                investedAmount = mongoRes[0] ? mongoRes[0].totalAmount : 0;
+
+                returnPercent = 0.15;
+                returnAmount = returnPercent*investedAmount;
+                currentAmount = returnAmount + investedAmount;
                 resBody.message = "Mutual Funds Fetched Successfully";
                 resBody["portfolioSummary"] = {
-                    obj1:{
+                    obj1: {
                         label: "Current",
-                        value: 229000
+                        value: currentAmount
                     },
-                    obj2:{
+                    obj2: {
                         label: "Returns",
-                        value: 56000
+                        value: returnAmount
                     },
-                    obj3:{
+                    obj3: {
                         label: "Invested",
-                        value: 173000
+                        value: investedAmount,
                     },
-                    obj4:{
+                    obj4: {
                         label: "Return(%)",
-                        value: 32.36
+                        value: parseFloat(returnPercent * 100).toFixed(2)
                     }
                 }
                 break;
             case "stocks":
                 resBody.portfolio = await Stock.find({ user: req.user._id });
+                mongoRes = await Stock.aggregate([
+                    {
+                        $match: { user: new ObjectId(userId) } // Filter documents with user id
+                    },
+                    {
+                        $group: {
+                            _id: null,
+                            totalAmount: { $sum: "$amount" } // Calculate the sum of 'amount'
+                        },
+                    }
+                ]);
+
+                investedAmount = mongoRes[0] ? mongoRes[0].totalAmount : 0;
+
+                returnPercent = 0.25;
+                returnAmount = returnPercent*investedAmount;
+                currentAmount = returnAmount + investedAmount;
                 resBody.message = "Stocks Fetched Successfully";
                 resBody["portfolioSummary"] = {
-                    obj1:{
+                    obj1: {
                         label: "Current",
-                        value: 229000
+                        value: currentAmount
                     },
-                    obj2:{
+                    obj2: {
                         label: "Returns",
-                        value: 56000
+                        value: returnAmount
                     },
-                    obj3:{
+                    obj3: {
                         label: "Invested",
-                        value: 173000
+                        value: investedAmount
                     },
-                    obj4:{
+                    obj4: {
                         label: "Return(%)",
-                        value: 32.36
+                        value: parseFloat(returnPercent * 100).toFixed(2)
                     }
                 }
 
                 break;
             case "bankAccounts":
-                resBody.portfolio = await BankAccount.find({ user: req.user._id });
+                resBody.portfolio = await BankAccount.find({ user: userId });
+                mongoRes = await BankAccount.aggregate([
+                    {
+                        $match: { user: new ObjectId(userId) } // Filter documents with user id
+                    },
+                    {
+                        $group: {
+                            _id: null,
+                            totalAmount: { $sum: "$currentBalance" } // Calculate the sum of 'amount'
+                        },
+                    }
+                ]);
+
+                investedAmount = mongoRes[0] ? mongoRes[0].totalAmount : 0;
+                
+
+                returnPercent = 0.079;
+                returnAmount = returnPercent*investedAmount;
+                currentAmount = returnAmount + investedAmount;
                 resBody.message = "Bank Accounts Fetched Successfully";
                 resBody["portfolioSummary"] = {
-                    obj1:{
+                    obj1: {
                         label: "Current Balance",
-                        value: 229000
+                        value: currentAmount
                     },
-                    obj2:{
+                    obj2: {
                         label: "Returns",
-                        value: 56000
+                        value: returnAmount
                     },
-                    obj3:{
+                    obj3: {
                         label: "Balance",
-                        value: 173000
+                        value: investedAmount
                     },
-                    obj4:{
+                    obj4: {
                         label: "Return(%)",
-                        value: 32.36
+                        value: parseFloat(returnPercent *100).toFixed(2)
                     }
                 }
 
@@ -166,21 +223,35 @@ const getuserPortfolio = async (req, res) => {
                 break;
             case "expenses":
                 resBody.portfolio = await PersonalExpense.find({ user: req.user._id });
+                mongoRes = await PersonalExpense.aggregate([
+                    {
+                        $match: { user: new ObjectId(userId) } // Filter documents with user id
+                    },
+                    {
+                        $group: {
+                            _id: null,
+                            totalAmount: { $sum: "$amount" } // Calculate the sum of 'amount'
+                        },
+                    }
+                ]);
+
+                const totalExpenseAmount = mongoRes[0] ? mongoRes[0].totalAmount : 0;
+
                 resBody.message = "Expenses Fetched Successfully";
                 resBody["portfolioSummary"] = {
-                    obj1:{
+                    obj1: {
                         label: "Total Expense",
-                        value: 229000
+                        value: totalExpenseAmount
                     },
-                    obj2:{
+                    obj2: {
                         label: "Week",
                         value: 56000
                     },
-                    obj3:{
+                    obj3: {
                         label: "Month",
                         value: 173000
                     },
-                    obj4:{
+                    obj4: {
                         label: "% of NW",
                         value: 32.36
                     }
@@ -190,22 +261,59 @@ const getuserPortfolio = async (req, res) => {
             case "loans":
                 resBody.portfolio = await Loan.find({ user: req.user._id });
                 resBody.message = "Loans Fetched Successfully";
+                const loanResTaken = await Loan.aggregate([
+                    {
+                        $match: { 
+                            user: new ObjectId(userId),
+                            loanType:"taken"
+                        } // Filter documents with user id
+                    },
+                    {
+                        $group: {
+                            _id: null,
+                            totalAmount: { $sum: "$amount" } // Calculate the sum of 'amount'
+                        },
+                    }
+                ]);
+
+                const loanResGiven = await Loan.aggregate([
+                    {
+                        $match: { 
+                            user: new ObjectId(userId),
+                            loanType:"given"
+                        } // Filter documents with user id
+                    },
+                    {
+                        $group: {
+                            _id: null,
+                            totalAmount: { $sum: "$amount" } // Calculate the sum of 'amount'
+                        },
+                    }
+                ]);
+
+                const loanTaken = loanResTaken[0] ? loanResTaken[0].totalAmount : 0;
+                const loanGiven = loanResGiven[0] ? loanResGiven[0].totalAmount : 0;
+                const netDiff = loanGiven - loanTaken;
+
+                returnAmount = returnPercent*investedAmount;
+                currentAmount = returnAmount + investedAmount;
+
                 resBody["portfolioSummary"] = {
-                    obj1:{
-                        label: "Total Amount",
-                        value: 229000
+                    obj1: {
+                        label: "Loan Taken",
+                        value: loanTaken
                     },
-                    obj2:{
-                        label: "Amount Paid",
-                        value: 56000
+                    obj2: {
+                        label: "Loan Given",
+                        value: loanGiven
                     },
-                    obj3:{
-                        label: "Remaining",
-                        value: 173000
+                    obj3: {
+                        label: "Net Difference",
+                        value: netDiff
                     },
-                    obj4:{
-                        label: "Interest(%)",
-                        value: 32.36
+                    obj4: {
+                        label: "Overall",
+                        value: netDiff > 0 ? "Positive" : "Negative"
                     }
                 }
 
@@ -218,8 +326,8 @@ const getuserPortfolio = async (req, res) => {
         }
         return successResponse(res, resBody.message,
             {
+                portfolioSummary: resBody["portfolioSummary"],
                 portfolio: resBody.portfolio,
-                portfolioSummary: resBody["portfolioSummary"]
             }
         );
 
