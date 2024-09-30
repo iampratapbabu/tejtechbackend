@@ -245,15 +245,15 @@ const getuserPortfolio = async (req, res) => {
                     },
                     obj2: {
                         label: "Week",
-                        value: 56000
+                        value: 0
                     },
                     obj3: {
                         label: "Month",
-                        value: 173000
+                        value: 0
                     },
                     obj4: {
                         label: "% of NW",
-                        value: 32.36
+                        value: 0
                     }
                 }
 
