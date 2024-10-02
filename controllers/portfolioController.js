@@ -98,7 +98,25 @@ const getuserPortfolio = async (req, res) => {
         const { portfolioType } = req.body;
         const userId = req.user._id;
         let resBody = {};
-        let mongoRes,investedAmount,returnPercent,returnAmount,currentAmount;
+        let mongoRes, mongoResMonth, mongoResYear, investedAmount, returnPercent, returnAmount, currentAmount;
+
+        //date operations
+        const currentDate = new Date();
+        const currentMonth = currentDate.getMonth() + 1;
+        const currentYear = currentDate.getFullYear();
+
+        // Create a date object for the first day of the next month
+        const nextMonth = new Date(currentYear, currentMonth + 1, 1);
+
+        // Subtract one day to get the last day of the current month
+        const lastDayOfCurrentMonth = new Date(nextMonth - 1);
+        const daysInCurrentMonth = lastDayOfCurrentMonth.getDate(); // Get the day (last day of the current month)
+
+        // console.log(daysInCurrentMonth); 
+        // console.log("greater than data",new Date(currentYear, currentMonth-1, 1),)
+        // console.log("less than date",new Date(currentYear, currentMonth-1,daysInCurrentMonth+1) );
+
+        const userPortfolio = await userPortfolioSummary(req);
         switch (portfolioType) {
             case "mutualFunds":
                 resBody.portfolio = await MutualFund.find({ user: userId });
@@ -117,7 +135,7 @@ const getuserPortfolio = async (req, res) => {
                 investedAmount = mongoRes[0] ? mongoRes[0].totalAmount : 0;
 
                 returnPercent = 0.15;
-                returnAmount = returnPercent*investedAmount;
+                returnAmount = returnPercent * investedAmount;
                 currentAmount = returnAmount + investedAmount;
                 resBody.message = "Mutual Funds Fetched Successfully";
                 resBody["portfolioSummary"] = {
@@ -156,7 +174,7 @@ const getuserPortfolio = async (req, res) => {
                 investedAmount = mongoRes[0] ? mongoRes[0].totalAmount : 0;
 
                 returnPercent = 0.25;
-                returnAmount = returnPercent*investedAmount;
+                returnAmount = returnPercent * investedAmount;
                 currentAmount = returnAmount + investedAmount;
                 resBody.message = "Stocks Fetched Successfully";
                 resBody["portfolioSummary"] = {
@@ -194,10 +212,10 @@ const getuserPortfolio = async (req, res) => {
                 ]);
 
                 investedAmount = mongoRes[0] ? mongoRes[0].totalAmount : 0;
-                
+
 
                 returnPercent = 0.079;
-                returnAmount = returnPercent*investedAmount;
+                returnAmount = returnPercent * investedAmount;
                 currentAmount = returnAmount + investedAmount;
                 resBody.message = "Bank Accounts Fetched Successfully";
                 resBody["portfolioSummary"] = {
@@ -215,7 +233,7 @@ const getuserPortfolio = async (req, res) => {
                     },
                     obj4: {
                         label: "Return(%)",
-                        value: parseFloat(returnPercent *100).toFixed(2)
+                        value: parseFloat(returnPercent * 100).toFixed(2)
                     }
                 }
 
@@ -223,6 +241,7 @@ const getuserPortfolio = async (req, res) => {
                 break;
             case "expenses":
                 resBody.portfolio = await PersonalExpense.find({ user: req.user._id });
+
                 mongoRes = await PersonalExpense.aggregate([
                     {
                         $match: { user: new ObjectId(userId) } // Filter documents with user id
@@ -235,7 +254,48 @@ const getuserPortfolio = async (req, res) => {
                     }
                 ]);
 
+                mongoResMonth = await PersonalExpense.aggregate([
+                    {
+                        $match: {
+                            user: new ObjectId(userId), // Filter documents with user id
+                            createdAt: {
+                                $gte: new Date(currentYear, currentMonth-1, 1), // Start of the month
+                                $lt: new Date(currentYear, currentMonth-1,daysInCurrentMonth+1)   // End of month
+                            }
+                        }
+                    },
+                    {
+                        $group: {
+                            _id: null,
+                            totalAmount: { $sum: "$amount" } // Calculate the sum of 'amount'
+                        },
+                    }
+                ]);
+
+
+                mongoResYear = await PersonalExpense.aggregate([
+                    {
+                        $match: {
+                            user: new ObjectId(userId), // Filter documents with user id
+                            createdAt: {
+                                $gte: new Date(currentYear,0,1), // Start of the year
+                                $lt: new Date(currentYear,11,31)   // end of year
+                            }
+                        }
+                    },
+                    {
+                        $group: {
+                            _id: null,
+                            totalAmount: { $sum: "$amount" } // Calculate the sum of 'amount'
+                        },
+                    }
+                ]);
+
                 const totalExpenseAmount = mongoRes[0] ? mongoRes[0].totalAmount : 0;
+                const totalExpenseAmountInMonth = mongoResMonth[0] ? mongoResMonth[0].totalAmount : 0;
+                const totalExpenseAmountInYear = mongoResYear[0] ? mongoResYear[0].totalAmount : 0;
+
+                const percentOfNetworth = (totalExpenseAmount / userPortfolio.totalAssets) * 100;
 
                 resBody.message = "Expenses Fetched Successfully";
                 resBody["portfolioSummary"] = {
@@ -244,16 +304,16 @@ const getuserPortfolio = async (req, res) => {
                         value: totalExpenseAmount
                     },
                     obj2: {
-                        label: "Week",
-                        value: 0
+                        label: "This Month",
+                        value: totalExpenseAmountInMonth
                     },
                     obj3: {
-                        label: "Month",
-                        value: 0
+                        label: "This Year",
+                        value: totalExpenseAmountInYear
                     },
                     obj4: {
                         label: "% of NW",
-                        value: 0
+                        value: parseFloat(percentOfNetworth).toFixed(2)
                     }
                 }
 
@@ -263,9 +323,9 @@ const getuserPortfolio = async (req, res) => {
                 resBody.message = "Loans Fetched Successfully";
                 const loanResTaken = await Loan.aggregate([
                     {
-                        $match: { 
+                        $match: {
                             user: new ObjectId(userId),
-                            loanType:"taken"
+                            loanType: "taken"
                         } // Filter documents with user id
                     },
                     {
@@ -278,9 +338,9 @@ const getuserPortfolio = async (req, res) => {
 
                 const loanResGiven = await Loan.aggregate([
                     {
-                        $match: { 
+                        $match: {
                             user: new ObjectId(userId),
-                            loanType:"given"
+                            loanType: "given"
                         } // Filter documents with user id
                     },
                     {
@@ -295,7 +355,7 @@ const getuserPortfolio = async (req, res) => {
                 const loanGiven = loanResGiven[0] ? loanResGiven[0].totalAmount : 0;
                 const netDiff = loanGiven - loanTaken;
 
-                returnAmount = returnPercent*investedAmount;
+                returnAmount = returnPercent * investedAmount;
                 currentAmount = returnAmount + investedAmount;
 
                 resBody["portfolioSummary"] = {
