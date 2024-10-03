@@ -104,9 +104,7 @@ const signup = async (req, res, err) => {
 
 const loginUser = async (req, res) => {
   try {
-    console.log(req.body);
     const user = await User.findOne({ email: req.body.userid }).select('+password');
-    console.log(user);
     if (!user) {
       throw new CustomError("auth_error", 400, "User Not Exists");
     }
@@ -138,7 +136,6 @@ const getMe = (req, res) => {
 //updation and deletion
 const editUser = async (req, res) => {
   try {
-    console.log(req.file);
     const { firstName, lastName, email, phone, gender, countryCode } = req.body;
     let user = await User.findById(req.user._id);
     user.firstName = firstName || req.user.firstName;
@@ -150,7 +147,6 @@ const editUser = async (req, res) => {
 
     if (req.file) {
       user.photo = req.file.path;
-      console.log("Photo updated of", user.firstName);
     }
 
     await user.save();

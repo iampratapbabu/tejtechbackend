@@ -27,7 +27,6 @@ const getPortfolioSummary = async (req, res) => {
 const createPortfolio = async (req, res) => {
     try {
         const { portfolioType } = req.query;
-        console.log(portfolioType);
 
         const { mutualFunds, stocks, bankAccounts, expenses, loans } = req.body;
         let resBody = {};
@@ -461,7 +460,6 @@ const deletePortfolio = async (req, res) => {
                 break;
             case "stocks":
                 let userStock = await Stock.findByIdAndDelete(portfolioId);
-                console.log(portfolioId);
                 resBody.message = "Stock Deleted Successfully";
                 resBody.data = userStock;
                 break;
