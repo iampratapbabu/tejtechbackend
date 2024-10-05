@@ -3,6 +3,7 @@ const morgan = require('morgan');
 const userRouter = require("./routes/userRoute");
 const portfolioRouter = require("./routes/portfolioRoute");
 const serviceRoute = require("./routes/serviceRoute");
+const utilsRoute = require("./routes/utilRoute");
 
 const cronService = require('./scripts/cronService');
 
@@ -37,6 +38,8 @@ app.get('/',(req,res)=>{
 app.use('/api/users',userRouter);
 app.use('/api/portfolio',portfolioRouter);
 app.use('/api/service',serviceRoute);
+app.use('/api/utils',utilsRoute);
+
 
 
 
