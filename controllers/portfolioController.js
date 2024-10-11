@@ -99,6 +99,12 @@ const getuserPortfolio = async (req, res) => {
         let resBody = {};
         let mongoRes, mongoResMonth, mongoResYear, investedAmount, returnPercent, returnAmount, currentAmount;
 
+        //static return Percent
+        const MF_RETURN_PERCENTAGE = 0.15;
+        const STOCKS_RETURN_PERCENTAGE = 0.25;
+        const ACCOUNT_RETURN_PERCENTAGE = 0.079;
+
+
         //date operations
         const currentDate = new Date();
         const currentMonth = currentDate.getMonth() + 1;
@@ -133,8 +139,7 @@ const getuserPortfolio = async (req, res) => {
 
                 investedAmount = mongoRes[0] ? mongoRes[0].totalAmount : 0;
 
-                returnPercent = 0.15;
-                returnAmount = returnPercent * investedAmount;
+                returnAmount = MF_RETURN_PERCENTAGE * investedAmount;
                 currentAmount = returnAmount + investedAmount;
                 resBody.message = "Mutual Funds Fetched Successfully";
                 resBody["portfolioSummary"] = {
@@ -152,7 +157,7 @@ const getuserPortfolio = async (req, res) => {
                     },
                     obj4: {
                         label: "Return(%)",
-                        value: parseFloat(returnPercent * 100).toFixed(2)
+                        value: parseFloat(MF_RETURN_PERCENTAGE * 100).toFixed(2)
                     }
                 }
                 break;
@@ -172,8 +177,7 @@ const getuserPortfolio = async (req, res) => {
 
                 investedAmount = mongoRes[0] ? mongoRes[0].totalAmount : 0;
 
-                returnPercent = 0.25;
-                returnAmount = returnPercent * investedAmount;
+                returnAmount = STOCKS_RETURN_PERCENTAGE * investedAmount;
                 currentAmount = returnAmount + investedAmount;
                 resBody.message = "Stocks Fetched Successfully";
                 resBody["portfolioSummary"] = {
@@ -191,7 +195,7 @@ const getuserPortfolio = async (req, res) => {
                     },
                     obj4: {
                         label: "Return(%)",
-                        value: parseFloat(returnPercent * 100).toFixed(2)
+                        value: parseFloat(STOCKS_RETURN_PERCENTAGE * 100).toFixed(2)
                     }
                 }
 
@@ -213,8 +217,7 @@ const getuserPortfolio = async (req, res) => {
                 investedAmount = mongoRes[0] ? mongoRes[0].totalAmount : 0;
 
 
-                returnPercent = 0.079;
-                returnAmount = returnPercent * investedAmount;
+                returnAmount = ACCOUNT_RETURN_PERCENTAGE * investedAmount;
                 currentAmount = returnAmount + investedAmount;
                 resBody.message = "Bank Accounts Fetched Successfully";
                 resBody["portfolioSummary"] = {
@@ -232,7 +235,7 @@ const getuserPortfolio = async (req, res) => {
                     },
                     obj4: {
                         label: "Return(%)",
-                        value: parseFloat(returnPercent * 100).toFixed(2)
+                        value: parseFloat(ACCOUNT_RETURN_PERCENTAGE * 100).toFixed(2)
                     }
                 }
 
@@ -460,6 +463,7 @@ const deletePortfolio = async (req, res) => {
                 break;
             case "stocks":
                 let userStock = await Stock.findByIdAndDelete(portfolioId);
+                console.log(portfolioId);
                 resBody.message = "Stock Deleted Successfully";
                 resBody.data = userStock;
                 break;

@@ -1,10 +1,10 @@
 const User = require('../models/userModel');
 const { errorResponse, successResponse } = require('../lib/responseHandler');
+const CustomError = require('../lib/customError');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const multer = require('multer');
 const bcrypt = require('bcrypt');
-const CustomError = require('../lib/customError');
 const { userPortfolioSummary } = require('../service/userPortfolioService');
 
 

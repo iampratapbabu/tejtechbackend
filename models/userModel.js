@@ -29,6 +29,10 @@ const userSchema = new mongoose.Schema({
     type:Number,
     default:null
   },
+  currency:{
+    type:String,
+    default:"INR"
+  },
   gender: {
     type: String,
     default:null

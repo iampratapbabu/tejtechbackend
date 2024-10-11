@@ -3,6 +3,8 @@ const Loan = require('../models/loanModel');
 const MutualFund = require('../models/mutualFundModel');
 const PersonalExpense = require('../models/personalExpenseModel');
 const Stock = require('../models/stockModel');
+const commonHelper = require('../helper/commonHelper');
+const User = require('../models/userModel');
 
 
 exports.userPortfolioSummary = async (req) => {

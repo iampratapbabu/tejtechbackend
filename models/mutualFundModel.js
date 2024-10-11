@@ -21,11 +21,11 @@ const mutualFundSchema = mongoose.Schema({
     },
     dateOfSip:{
         type:Date,
-        default:Date.now()
+        // default:Date.now()
     },
     dateOfInvestment:{
         type:Date,
-        default:Date.now()
+        // default:Date.now()
     },
     createdAt:{
         type:Date,
